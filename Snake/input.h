@@ -9,16 +9,6 @@
 #define INPUT_RIGHT 3
 #define INPUT_DOWN  4
 
-typedef struct mouse {
-	double x;
-	double y;
-} mouse_t;
-
-typedef struct input {
-	unsigned char last_direction;
-	mouse_t mouse;
-} input_t;
-
 void init_input(GLFWwindow* window);
 
 #endif

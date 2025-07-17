@@ -3,10 +3,10 @@
 #include "window.h"
 #include "input.h"
 
-void init_glfw(GLFWerrorfun error_callback) {
+int init_glfw(GLFWerrorfun error_callback) {
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
-		return EXIT_FAILURE;
+		return -1;
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -14,6 +14,8 @@ void init_glfw(GLFWerrorfun error_callback) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	glfwSetTime(0);
+
+	return 0;
 }
 
 GLFWwindow* init_glfw_window(int window_width, int window_height,

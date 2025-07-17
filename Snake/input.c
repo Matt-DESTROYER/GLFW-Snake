@@ -1,5 +1,7 @@
 #include "input.h"
 
+#include "game.h"
+
 static void key_callback(GLFWwindow* window, int key, int scancode,
 	int action, int mods) {
 	input_t* input = (input_t*)glfwGetWindowUserPointer(window);
@@ -28,19 +30,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
 	}
 }
 
-static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+static void cursor_position_callback(GLFWwindow* window,
+	double xpos, double ypos) {
 	input_t* input = (input_t*)glfwGetWindowUserPointer(window);
 	input->mouse.x = xpos;
 	input->mouse.y = ypos;
 }
 
 void init_input(GLFWwindow* window) {
-	static input_t input;
-	input.last_direction = 0;
-	input.mouse = (mouse_t){ .x = 0, .y = 0 };
-
-	glfwSetWindowUserPointer(window, &input);
-
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 }

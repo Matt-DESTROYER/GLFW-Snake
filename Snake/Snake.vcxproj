@@ -72,27 +72,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExecutablePath>$(CommonExecutablePath)$(VC_ExecutablePath_x86);</ExecutablePath>
-    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)</IntDir>
-    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <ExecutablePath>$(CommonExecutablePath)$(VC_ExecutablePath_x86);</ExecutablePath>
-    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)</IntDir>
-    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)</OutDir>
+    <IntDir>$(SolutionDir)\Temp\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)\Builld\$(Configuration)\$(Platform)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -188,13 +188,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\glad\src\gl.c" />
+    <ClCompile Include="game.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="point.c" />
+    <ClCompile Include="renderer.c" />
     <ClCompile Include="window.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="game.h" />
     <ClInclude Include="glfw_includes.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="point.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
