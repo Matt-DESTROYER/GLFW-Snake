@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 typedef struct point {
-	double x, y;
+	float x, y;
 } point_t;
 
 bool point_equal(point_t* p1, point_t* p2);

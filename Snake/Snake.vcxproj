@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -109,10 +109,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\..\glfw</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\..\glfw\glfw3.dll" "$(TargetDir)"</Command>
+      <Command>python3 build_helper.py "$(SolutionDir)\" "$(TargetDir)\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy glfw3 dll into target directory.</Message>
+      <Message>Copy required files into target directory.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,10 +133,10 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);glfw3dll.lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\..\glfw\glfw3.dll" "$(TargetDir)"</Command>
+      <Command>python3 build_helper.py "$(SolutionDir)\" "$(TargetDir)\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy glfw3 dll into target directory.</Message>
+      <Message>Copy required files into target directory.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,10 +156,10 @@
       </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\..\glfw\glfw3.dll" "$(TargetDir)"</Command>
+      <Command>python3 build_helper.py "$(SolutionDir)\" "$(TargetDir)\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy glfw3 dll into target directory.</Message>
+      <Message>Copy required files into target directory.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -180,28 +180,36 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\..\glfw\glfw3.dll" "$(TargetDir)"</Command>
+      <Command>python3 build_helper.py "$(SolutionDir)\" "$(TargetDir)\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copy glfw3 dll into target directory.</Message>
+      <Message>Copy required files into target directory.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\glad\src\gl.c" />
+    <ClCompile Include="file.c" />
     <ClCompile Include="game.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="point.c" />
     <ClCompile Include="renderer.c" />
+    <ClCompile Include="shaders.c" />
     <ClCompile Include="window.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="file.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="glfw_includes.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="shaders.h" />
     <ClInclude Include="window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\main.frag" />
+    <None Include="Shaders\main.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

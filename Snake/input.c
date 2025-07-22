@@ -1,6 +1,6 @@
 #include "input.h"
 
-#include "game.h"
+#include "glfw_includes.h"
 
 static void key_callback(GLFWwindow* window, int key, int scancode,
 	int action, int mods) {
@@ -9,22 +9,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
 		switch (key) {
 			case GLFW_KEY_A:
 			case GLFW_KEY_LEFT:
-				input->last_direction = INPUT_LEFT;
+				if (input->last_direction != INPUT_RIGHT)
+					input->new_direciton = INPUT_LEFT;
 				break;
 
 			case GLFW_KEY_W:
 			case GLFW_KEY_UP:
-				input->last_direction = INPUT_UP;
+				if (input->last_direction != INPUT_DOWN)
+					input->new_direciton = INPUT_UP;
 				break;
 
 			case GLFW_KEY_D:
 			case GLFW_KEY_RIGHT:
-				input->last_direction = INPUT_RIGHT;
+				if (input->last_direction != INPUT_LEFT)
+					input->new_direciton = INPUT_RIGHT;
 				break;
 
 			case GLFW_KEY_S:
 			case GLFW_KEY_DOWN:
-				input->last_direction = INPUT_DOWN;
+				if (input->last_direction != INPUT_UP)
+					input->new_direciton = INPUT_DOWN;
 				break;
 		}
 	}

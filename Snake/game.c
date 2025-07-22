@@ -7,13 +7,14 @@
 #include "window.h"
 #include "input.h"
 #include "renderer.h"
+#include "shaders.h"
 
 void error_callback(int error, const char* desc) {
 	fprintf(stderr, "Error: %s\n", desc);
 }
 
 int init_game(void) {
-	if (init_glfw(error_callback) == -1) {
+	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
 	}
 
@@ -30,18 +31,22 @@ int init_game(void) {
 		return EXIT_FAILURE;
 	}
 
+	// initialise the game's state {
 	static game_state_t game_state;
 	game_state.score = 0;
 	game_state.high_score = 0;
 
-	for (uint16_t i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
-		game_state.snake[i].x = -1.0;
-		game_state.snake[i].y = -1.0;
+	for (size_t i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
+		game_state.snake[i].x = 0.0f;
+		game_state.snake[i].y = 0.0f;
 	}
-	game_state.snake[0].x = (double)((int)(GRID_WIDTH * 0.25));
-	game_state.snake[0].y = (double)((int)(GRID_HEIGHT * 0.5));
+	game_state.snake[0].x = (float)((int)(GRID_WIDTH_LEFT / 2));
+	game_state.snake[0].y = 0;
 
-	game_state.food_count = 0;
+	game_state.apple.x = (float)((int)(GRID_WIDTH_RIGHT / 2));
+	game_state.apple.y = 0;
+
+	game_state.food_count = 1;
 	game_state.game_over  = false;
 	game_state.paused     = false;
 	game_state.speed      = 1.0;
@@ -52,12 +57,27 @@ int init_game(void) {
 
 	game_state.GAME_WIDTH  = GAME_WIDTH;
 	game_state.GAME_HEIGHT = GAME_HEIGHT;
+	game_state.SIZE = (float)GAME_WIDTH / (float)GRID_WIDTH;
+	// }
 	
 	glfwSetWindowUserPointer(window, &game_state.input);
 
-	double previous_time = glfwGetTime();
-	double current_time;
-	double delta_time;
+	if (init_renderer(&game_state) == FAILURE) {
+		end_game(window);
+		return EXIT_FAILURE;
+	}
+
+	game_loop(window, &game_state);
+	end_game(window);
+
+	return EXIT_SUCCESS;
+}
+
+void game_loop(GLFWwindow* window, game_state_t* game_state) {
+	double previous_time  = glfwGetTime();
+	double current_time   = 0.0;
+	double delta_time     = 0.0;
+	game_state->last_tick = previous_time;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -66,17 +86,72 @@ int init_game(void) {
 		delta_time = current_time - previous_time;
 		previous_time = current_time;
 
-		update(&game_state, delta_time);
-		render(&game_state);
+		update(game_state, delta_time, current_time);
+		render(game_state);
 
 		glfwSwapBuffers(window);
 	}
-
-	end_game(window);
-	return EXIT_SUCCESS;
 }
 
-void update(game_state_t* game_state, double delta_time) {
+void update(game_state_t* game_state, double delta_time, double current_time) {
+	if (current_time - game_state->last_tick > TICK_DELTA) {
+		// move snake {
+		for (size_t i = 0; i < game_state->food_count - 1; i++) {
+			size_t index = game_state->food_count - i - 1;
+			
+			game_state->snake[index].x = game_state->snake[index - 1].x;
+			game_state->snake[index].y = game_state->snake[index - 1].y;
+		}
+		switch (game_state->input.new_direciton) {
+			case INPUT_LEFT:
+				game_state->snake[0].x--;
+				break;
+			case INPUT_UP:
+				game_state->snake[0].y++;
+				break;
+			case INPUT_RIGHT:
+				game_state->snake[0].x++;
+				break;
+			case INPUT_DOWN:
+				game_state->snake[0].y--;
+				break;
+			default:
+				break;
+		}
+		game_state->input.last_direction = game_state->input.new_direciton;
+		game_state->last_tick = current_time;
+		// }
+
+		// boundary checks {
+		if (game_state->snake[0].x < GRID_WIDTH_LEFT ||
+			game_state->snake[0].x > GRID_WIDTH_RIGHT ||
+			game_state->snake[0].y < GRID_HEIGHT_BOTTOM ||
+			game_state->snake[0].y > GRID_HEIGHT_TOP) {
+			game_state->game_over = true;
+		}
+		// }
+
+		// self collision checks {
+		for (size_t i = 1; i < game_state->food_count; i++) {
+			if (game_state->snake[0].x == game_state->snake[i].x &&
+				game_state->snake[0].y == game_state->snake[i].y) {
+				game_state->game_over = true;
+			}
+		}
+		// }
+
+		//  apple collision checks {
+		if (game_state->snake[0].x == game_state->apple.x &&
+			game_state->snake[0].y == game_state->apple.y) {
+			game_state->snake[game_state->food_count].x = game_state->snake[game_state->food_count - 1].x;
+			game_state->snake[game_state->food_count].y = game_state->snake[game_state->food_count - 1].y;
+			game_state->food_count++;
+			game_state->score++;
+			game_state->apple.x = (float)((rand() % GRID_WIDTH) + GRID_WIDTH_LEFT);
+			game_state->apple.y = (float)((rand() % GRID_HEIGHT) + GRID_HEIGHT_BOTTOM);
+		}
+		// }
+	}
 }
 
 void end_game(GLFWwindow* window) {
