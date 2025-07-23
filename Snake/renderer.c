@@ -9,11 +9,12 @@
 #define FAILURE 0
 #define SUCCESS 1
 
-#define COLOUR_BLACK 0.0f, 0.0f, 0.0f
-#define COLOUR_GREY 0.5f, 0.5f, 0.5f
-#define COLOUR_WHITE 1.0f, 1.0f, 1.0f
-#define COLOUR_RED 255.0f, 0.0f, 0.0f
-#define COLOUR_GREEN 0.0f, 138.0f, 0.0f
+#define COLOUR_BLACK      0.0f, 0.0f, 0.0f
+#define COLOUR_GREY       0.5f, 0.5f, 0.5f
+#define COLOUR_WHITE      1.0f, 1.0f, 1.0f
+#define COLOUR_RED        255.0f, 0.0f, 0.0f
+#define COLOUR_DARK_GREEN 0.0f, 100.0f, 0.0f
+#define COLOUR_GREEN      0.0f, 138.0f, 0.0f
 
 int init_renderer(game_state_t* game_state) {
 	game_state->shader_program = create_shader("./Shaders/main.vert", "./Shaders/main.frag");
@@ -80,15 +81,23 @@ void render(game_state_t* game_state) {
 	glClearColor(COLOUR_BLACK, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// prepare to draw squares
 	glUseProgram(game_state->shader_program);
 	glBindVertexArray(game_state->square_VAO);
 
+	// draw apple
 	glUniform2f(game_state->u_position_location, game_state->apple.x * game_state->SIZE, game_state->apple.y * game_state->SIZE);
 	glUniform4f(game_state->u_colour_location, COLOUR_RED, 1.0f);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+	// draw snake head
+	glUniform4f(game_state->u_colour_location, COLOUR_DARK_GREEN, 1.0f);
+	glUniform2f(game_state->u_position_location, game_state->snake[0].x * game_state->SIZE, game_state->snake[0].y * game_state->SIZE);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// draw snake body
 	glUniform4f(game_state->u_colour_location, COLOUR_GREEN, 1.0f);
-	for (size_t i = 0; i < game_state->food_count; i++) {
+	for (size_t i = 1; i < game_state->food_count; i++) {
 		glUniform2f(game_state->u_position_location, game_state->snake[i].x * game_state->SIZE, game_state->snake[i].y * game_state->SIZE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
