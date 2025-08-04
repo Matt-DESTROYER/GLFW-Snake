@@ -15,8 +15,11 @@
 #define GRID_HEIGHT_TOP     (GRID_HEIGHT / 2)
 #define GRID_HEIGHT_BOTTOM -(GRID_HEIGHT / 2)
 
-#define TICK_RATE   2.0
+#define TICK_RATE   3.0
 #define TICK_DELTA  (1.0 / TICK_RATE)
+
+#define TITLE_WIDTH  600
+#define TITLE_HEIGHT 300
 
 typedef enum game_scene {
 	SCENE_MENU,
@@ -41,15 +44,22 @@ typedef struct game_state {
 	game_scene_t scene;
 
 	// TEMP
-	GLint shader_program;
+	GLint square_shader_program;
 	GLint square_VAO;
 	GLint square_VBO;
 	GLint square_EBO;
-	GLint u_width_location;
-	GLint u_height_location;
+
+	GLint u_dimensions_location;
 	GLint u_position_location;
 	GLint u_size_location;
 	GLint u_colour_location;
+
+	GLint texture_shader_program;
+	GLint u_texture_screen_dimensions_location;
+	GLint u_texture_dimensions_location;
+	GLint u_texture_position_location;
+
+	GLuint texture_title;
 } game_state_t;
 
 int init_game(void);

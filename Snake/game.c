@@ -8,6 +8,7 @@
 #include "input.h"
 #include "renderer.h"
 #include "shaders.h"
+#include "images.h"
 
 void error_callback(int error, const char* desc) {
 	fprintf(stderr, "Error: %s\n", desc);
@@ -19,8 +20,8 @@ int init_game(void) {
 	}
 
 	// calculate game window size (75% of screen size)
-	GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
-	GLFWvidmode* video_mode = glfwGetVideoMode(primary_monitor);
+	const GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* video_mode = glfwGetVideoMode(primary_monitor);
 	const int GAME_WIDTH = (int)(video_mode->width * 0.75);
 	const int GAME_HEIGHT = (int)(video_mode->height * 0.75);
 
@@ -59,9 +60,14 @@ int init_game(void) {
 	game_state.GAME_HEIGHT = (float)GAME_HEIGHT;
 	game_state.SIZE = (float)GAME_WIDTH / (float)GRID_WIDTH;
 
-	//game_state.scene = SCENE_MENU;
-	game_state.scene = SCENE_PLAYING;
+	game_state.scene = SCENE_MENU;
+	//game_state.scene = SCENE_PLAYING;
 	// }
+
+	// LOAD OUR FIRST IMAGE!!!
+	image_t* image = load_image("Assets/title.png");
+	game_state.texture_title = create_texture(image);
+	free_image(image);
 	
 	glfwSetWindowUserPointer(window, &game_state);
 

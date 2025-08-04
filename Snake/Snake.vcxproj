@@ -194,6 +194,7 @@
     <ClCompile Include="..\..\..\glad\src\gl.c" />
     <ClCompile Include="file.c" />
     <ClCompile Include="game.c" />
+    <ClCompile Include="images.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="point.c" />
@@ -205,6 +206,7 @@
     <ClInclude Include="file.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="glfw_includes.h" />
+    <ClInclude Include="images.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="renderer.h" />
@@ -212,8 +214,10 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\main.frag" />
-    <None Include="Shaders\main.vert" />
+    <None Include="Shaders\square.frag" />
+    <None Include="Shaders\square.vert" />
+    <None Include="Shaders\texture.frag" />
+    <None Include="Shaders\texture.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

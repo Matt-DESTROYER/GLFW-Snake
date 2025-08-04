@@ -66,5 +66,6 @@ GLint create_shader(const char* vertex_shader_file, const char* fragment_shader_
 
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
+
 	return shader_program;
 }

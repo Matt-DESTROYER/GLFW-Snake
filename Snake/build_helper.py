@@ -12,16 +12,16 @@ argv[2] = "$(TargetDir)"
 """
 
 
-solution_dir = argv[1]
-target_dir   = argv[2]
+solution_dir: str   = argv[1]
+target_dir: str     = argv[2]
 
-glfw_dll       = "glfw3.dll"
-glfw_source    = path.join(solution_dir, "../glfw")
-opengl_dll     = "opengl32.dll"
-opengl_source  = path.join(solution_dir, "../opengl")
-shaders_path   = "Shaders"
-shaders_source = path.join(solution_dir, shaders_path)
-shaders_target = path.join(target_dir, shaders_path)
+shaders_path: str   = "./Shaders"
+shaders_source: str = path.join(solution_dir, shaders_path)
+shaders_target: str = path.join(target_dir, shaders_path)
+
+assets_path: str    = "./Assets"
+assets_source: str  = path.join(solution_dir, assets_path)
+assets_target: str  = path.join(target_dir, assets_path)
 
 
 def remove(_path: str) -> None:
@@ -52,6 +52,7 @@ for file in list_dir(target_dir):
            for extension in AUTO_REMOVE_EXTENSIONS):
             remove(file)
 
-# copy/replace shaders
+# copy/replace shaders and assets
 copy_or_replace(shaders_source, shaders_target)
+copy_or_replace(assets_source, assets_target)
 

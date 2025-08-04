@@ -45,6 +45,9 @@
     <ClCompile Include="file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="images.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h">
@@ -71,12 +74,21 @@
     <ClInclude Include="file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="images.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\main.frag">
+    <None Include="Shaders\square.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\main.vert">
+    <None Include="Shaders\square.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\texture.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\texture.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -2,20 +2,19 @@
 
 layout (location = 0) in vec2 v_position;
 
-uniform float u_width;
-uniform float u_height;
+uniform vec2 u_dimensions;
 uniform vec2 u_position;
 uniform float u_size;
 
 void main() {
 	vec2 position = v_position * (u_size / 2);
-	position.x /= u_width;
-	position.y /= u_height;
+	position.x /= u_dimensions.x;
+	position.y /= u_dimensions.y;
 
 	
 	vec2 translation = vec2(
-		u_position.x / u_width,
-		u_position.y / u_height
+		u_position.x / u_dimensions.x,
+		u_position.y / u_dimensions.y
 	);
 	position += translation;
 

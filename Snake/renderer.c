@@ -17,42 +17,52 @@
 #define COLOUR_GREEN      0.0f, 138.0f, 0.0f
 
 int init_renderer(game_state_t* game_state) {
-	game_state->shader_program = create_shader("./Shaders/main.vert", "./Shaders/main.frag");
-	if (game_state->shader_program == FAILURE) {
+	game_state->square_shader_program = create_shader("./Shaders/square.vert", "./Shaders/square.frag");
+	if (game_state->square_shader_program == FAILURE) {
 		fprintf(stderr, "Error: Failed to load shaders...");
 		return FAILURE;
 	}
 
-	glUseProgram(game_state->shader_program);
+	game_state->texture_shader_program = create_shader("./Shaders/texture.vert", "./Shaders/texture.frag");
+	if (game_state->texture_shader_program == FAILURE) {
+		fprintf(stderr, "Error: Failed to load texture shaders...");
+		glDeleteProgram(game_state->square_shader_program);
+		return FAILURE;
+	}
 
-	game_state->u_width_location    = glGetUniformLocation(game_state->shader_program, "u_width");
-	game_state->u_height_location   = glGetUniformLocation(game_state->shader_program, "u_height");
-	game_state->u_position_location = glGetUniformLocation(game_state->shader_program, "u_position");
-	game_state->u_size_location     = glGetUniformLocation(game_state->shader_program, "u_size");
-	game_state->u_colour_location   = glGetUniformLocation(game_state->shader_program, "u_colour");
+	game_state->u_dimensions_location = glGetUniformLocation(game_state->square_shader_program, "u_dimensions");
+	game_state->u_position_location   = glGetUniformLocation(game_state->square_shader_program, "u_position");
+	game_state->u_size_location       = glGetUniformLocation(game_state->square_shader_program, "u_size");
+	game_state->u_colour_location     = glGetUniformLocation(game_state->square_shader_program, "u_colour");
+
+	game_state->u_texture_screen_dimensions_location = glGetUniformLocation(game_state->texture_shader_program, "u_screen_dimensions");
+	game_state->u_texture_dimensions_location        = glGetUniformLocation(game_state->texture_shader_program, "u_dimensions");
+	game_state->u_texture_position_location          = glGetUniformLocation(game_state->texture_shader_program, "u_position");
 
 	setup_geometry(&game_state->square_VAO, &game_state->square_VBO, &game_state->square_EBO);
 	if (game_state->square_VAO == FAILURE ||
 		game_state->square_VBO == FAILURE ||
 		game_state->square_EBO == FAILURE) {
-		glDeleteProgram(game_state->shader_program);
+		glDeleteProgram(game_state->square_shader_program);
 		return FAILURE;
 	}
 
-	glUniform1f(game_state->u_width_location, (GLfloat)game_state->GAME_WIDTH);
-	glUniform1f(game_state->u_height_location, (GLfloat)game_state->GAME_HEIGHT);
-
+	glUseProgram(game_state->square_shader_program);
+	glUniform2f(game_state->u_dimensions_location, game_state->GAME_WIDTH, game_state->GAME_HEIGHT);
 	glUniform1f(game_state->u_size_location, game_state->SIZE);
+
+	glUseProgram(game_state->texture_shader_program);
+	glUniform2f(game_state->u_texture_screen_dimensions_location, game_state->GAME_WIDTH, game_state->GAME_HEIGHT);
 
 	return SUCCESS;
 }
 
 void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 	float SQUARE_VERTICES[] = {
-		-1.0f, -1.0f,
-		 1.0f, -1.0f,
-		 1.0f,  1.0f,
-		-1.0f,  1.0f
+		-1.0f, -1.0f, 0.0f, 1.0f,
+		 1.0f, -1.0f, 1.0f, 1.0f,
+		 1.0f,  1.0f, 1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f, 0.0f
 	};
 	uint32_t SQUARE_INDICES[] = {
 		0, 1, 2,
@@ -71,8 +81,11 @@ void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SQUARE_INDICES), SQUARE_INDICES, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), NULL);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), NULL);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
 }
@@ -80,14 +93,24 @@ void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 void render_menu(game_state_t* game_state) {
 	glClearColor(COLOUR_BLACK, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	glBindVertexArray(game_state->square_VAO);
+	glUseProgram(game_state->texture_shader_program);
+
+	glUniform2f(game_state->u_texture_dimensions_location, TITLE_WIDTH, TITLE_HEIGHT);
+	glUniform2f(game_state->u_texture_position_location, 0, -TITLE_HEIGHT / 2.0f);
+
+	glBindTexture(GL_TEXTURE_2D, game_state->texture_title);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 void render_playing(game_state_t* game_state) {
 	glClearColor(COLOUR_BLACK, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// prepare to draw squares
-	glUseProgram(game_state->shader_program);
 	glBindVertexArray(game_state->square_VAO);
+	glUseProgram(game_state->square_shader_program);
 
 	// draw apple
 	glUniform2f(game_state->u_position_location, game_state->apple.x * game_state->SIZE, game_state->apple.y * game_state->SIZE);
@@ -129,5 +152,5 @@ void cleanup(game_state_t* game_state) {
 	glDeleteVertexArrays(1, &game_state->square_VAO);
 	glDeleteBuffers(1, &game_state->square_VBO);
 	glDeleteBuffers(1, &game_state->square_EBO);
-	glDeleteProgram(game_state->shader_program);
+	glDeleteProgram(game_state->square_shader_program);
 }
