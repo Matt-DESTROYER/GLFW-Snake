@@ -6,9 +6,6 @@ uniform float u_width;
 uniform float u_height;
 uniform vec2 u_position;
 uniform float u_size;
-uniform vec4 u_colour;
-
-layout(location = 0) out vec4 colour;
 
 void main() {
 	vec2 position = v_position * (u_size / 2);
@@ -23,6 +20,4 @@ void main() {
 	position += translation;
 
 	gl_Position = vec4(position, 0.0, 1.0);
-
-	colour = u_colour / 255.0f;
 }

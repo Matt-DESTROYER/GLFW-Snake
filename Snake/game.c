@@ -55,12 +55,15 @@ int init_game(void) {
 	game_state.input.mouse.x = 0;
 	game_state.input.mouse.y = 0;
 
-	game_state.GAME_WIDTH  = GAME_WIDTH;
-	game_state.GAME_HEIGHT = GAME_HEIGHT;
+	game_state.GAME_WIDTH  = (float)GAME_WIDTH;
+	game_state.GAME_HEIGHT = (float)GAME_HEIGHT;
 	game_state.SIZE = (float)GAME_WIDTH / (float)GRID_WIDTH;
+
+	//game_state.scene = SCENE_MENU;
+	game_state.scene = SCENE_PLAYING;
 	// }
 	
-	glfwSetWindowUserPointer(window, &game_state.input);
+	glfwSetWindowUserPointer(window, &game_state);
 
 	if (init_renderer(&game_state) == FAILURE) {
 		end_game(window);

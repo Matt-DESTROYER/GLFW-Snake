@@ -18,6 +18,12 @@
 #define TICK_RATE   2.0
 #define TICK_DELTA  (1.0 / TICK_RATE)
 
+typedef enum game_scene {
+	SCENE_MENU,
+	SCENE_PLAYING,
+	SCENE_GAME_OVER
+} game_scene_t;
+
 typedef struct game_state {
 	uint32_t score;
 	uint32_t high_score;
@@ -32,6 +38,7 @@ typedef struct game_state {
 	float GAME_HEIGHT;
 	float SIZE;
 	double last_tick;
+	game_scene_t scene;
 
 	// TEMP
 	GLint shader_program;

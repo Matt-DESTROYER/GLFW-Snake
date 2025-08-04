@@ -77,7 +77,11 @@ void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 	glBindVertexArray(0);
 }
 
-void render(game_state_t* game_state) {
+void render_menu(game_state_t* game_state) {
+	glClearColor(COLOUR_BLACK, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+void render_playing(game_state_t* game_state) {
 	glClearColor(COLOUR_BLACK, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -100,6 +104,24 @@ void render(game_state_t* game_state) {
 	for (size_t i = 1; i < game_state->food_count; i++) {
 		glUniform2f(game_state->u_position_location, game_state->snake[i].x * game_state->SIZE, game_state->snake[i].y * game_state->SIZE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+}
+void render_game_over(game_state_t* game_state) {
+	glClearColor(COLOUR_BLACK, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void render(game_state_t* game_state) {
+	switch (game_state->scene) {
+		case SCENE_MENU:
+			render_menu(game_state);
+			break;
+		case SCENE_PLAYING:
+			render_playing(game_state);
+			break;
+		case SCENE_GAME_OVER:
+			render_game_over(game_state);
+			break;
 	}
 }
 

@@ -1,5 +1,5 @@
 from sys import argv
-from os import path, remove as rm_file
+from os import path, remove as rm_file, listdir as list_dir
 from shutil import copytree as copy_dir, copy as copy_file, rmtree as rm_dir
 
 
@@ -25,19 +25,33 @@ shaders_target = path.join(target_dir, shaders_path)
 
 
 def remove(_path: str) -> None:
+    """
+    Delete a file or folder if it exists.
+    """
     if path.isdir(_path):
         rm_dir(_path)
     elif path.exists(_path):
         rm_file(_path)
     
 
+def copy_or_replace(source: str, target: str) -> None:
+    """
+    Copies a folder or file to target destination, removing
+    any pre-existing folder with the same name.
+    """
+    remove(target)
+    copy_dir(source, target)
+
+
+# remove build artifacts
+AUTO_REMOVE_EXTENSIONS = (".lib", ".exp")
+for file in list_dir(target_dir):
+    if path.isfile(file):
+        print(f"Found file: {file}")
+        if any(file.endswith(extension)\
+           for extension in AUTO_REMOVE_EXTENSIONS):
+            remove(file)
+
 # copy/replace shaders
-remove(shaders_target)
-copy_dir(shaders_source, shaders_target)
-
-# copy/replace glfw dll
-remove(path.join(target_dir, glfw_dll))
-copy_file(path.join(glfw_source, glfw_dll), path.join(target_dir, glfw_dll))
-
-# may later also add opengl dll to build
+copy_or_replace(shaders_source, shaders_target)
 
