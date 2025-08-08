@@ -191,10 +191,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\glad\src\gl.c" />
     <ClCompile Include="file.c" />
     <ClCompile Include="game.c" />
     <ClCompile Include="images.c" />
+    <ClCompile Include="include\glad\gl.c" />
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="point.c" />
@@ -211,6 +211,7 @@
     <ClInclude Include="point.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="shaders.h" />
+    <ClInclude Include="sprite.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>

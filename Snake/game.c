@@ -14,13 +14,30 @@ void error_callback(int error, const char* desc) {
 	fprintf(stderr, "Error: %s\n", desc);
 }
 
+void restart_game(game_state_t* game_state) {
+	game_state->score = 0;
+
+	game_state->snake[0].x = (float)((int)(GRID_WIDTH_LEFT / 2));
+	game_state->snake[0].y = 0;
+
+	game_state->apple.x = (float)((int)(GRID_WIDTH_RIGHT / 2));
+	game_state->apple.y = 0;
+
+	game_state->food_count = 1;
+	game_state->game_over = false;
+	game_state->paused = false;
+	game_state->speed = 1.0;
+
+	game_state->input.last_direction = INPUT_NULL;
+}
+
 int init_game(void) {
 	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
 	}
 
 	// calculate game window size (75% of screen size)
-	const GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
+	GLFWmonitor* primary_monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* video_mode = glfwGetVideoMode(primary_monitor);
 	const int GAME_WIDTH = (int)(video_mode->width * 0.75);
 	const int GAME_HEIGHT = (int)(video_mode->height * 0.75);
@@ -41,24 +58,15 @@ int init_game(void) {
 		game_state.snake[i].x = 0.0f;
 		game_state.snake[i].y = 0.0f;
 	}
-	game_state.snake[0].x = (float)((int)(GRID_WIDTH_LEFT / 2));
-	game_state.snake[0].y = 0;
 
-	game_state.apple.x = (float)((int)(GRID_WIDTH_RIGHT / 2));
-	game_state.apple.y = 0;
-
-	game_state.food_count = 1;
-	game_state.game_over  = false;
-	game_state.paused     = false;
-	game_state.speed      = 1.0;
-
-	game_state.input.last_direction = INPUT_NULL;
 	game_state.input.mouse.x = 0;
 	game_state.input.mouse.y = 0;
 
 	game_state.GAME_WIDTH  = (float)GAME_WIDTH;
 	game_state.GAME_HEIGHT = (float)GAME_HEIGHT;
 	game_state.SIZE = (float)GAME_WIDTH / (float)GRID_WIDTH;
+
+	restart_game(&game_state);
 
 	game_state.scene = SCENE_MENU;
 	//game_state.scene = SCENE_PLAYING;
@@ -150,14 +158,26 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 		// }
 
 		//  apple collision checks {
-		if (game_state->snake[0].x == game_state->apple.x &&
-			game_state->snake[0].y == game_state->apple.y) {
+		if (point_equal(&game_state->snake[0], &game_state->apple)) {
 			game_state->snake[game_state->food_count].x = game_state->snake[game_state->food_count - 1].x;
 			game_state->snake[game_state->food_count].y = game_state->snake[game_state->food_count - 1].y;
 			game_state->food_count++;
 			game_state->score++;
-			game_state->apple.x = (float)((rand() % GRID_WIDTH) + GRID_WIDTH_LEFT);
-			game_state->apple.y = (float)((rand() % GRID_HEIGHT) + GRID_HEIGHT_BOTTOM);
+
+			// prevent apple from spawning inside snake
+			bool in_snake = true;
+			while (in_snake) {
+				game_state->apple.x = (float)((rand() % GRID_WIDTH) + GRID_WIDTH_LEFT);
+				game_state->apple.y = (float)((rand() % GRID_HEIGHT) + GRID_HEIGHT_BOTTOM);
+
+				in_snake = false;
+				for (size_t i = 0; i < game_state->food_count; i++) {
+					if (point_equal(&game_state->snake[i], &game_state->apple)) {
+						in_snake = true;
+						break;
+					}
+				}
+			}
 		}
 		// }
 	}
