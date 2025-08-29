@@ -10,8 +10,8 @@
 #define SUCCESS 1
 
 #define COLOUR_BLACK      0.0f, 0.0f, 0.0f
-#define COLOUR_GREY       0.5f, 0.5f, 0.5f
-#define COLOUR_WHITE      1.0f, 1.0f, 1.0f
+#define COLOUR_GREY       127.5f, 127.5f, 127.5f
+#define COLOUR_WHITE      255.0f, 255.0f, 255.0f
 #define COLOUR_RED        255.0f, 0.0f, 0.0f
 #define COLOUR_DARK_GREEN 0.0f, 100.0f, 0.0f
 #define COLOUR_GREEN      0.0f, 138.0f, 0.0f
@@ -29,6 +29,10 @@ int init_renderer(game_state_t* game_state) {
 		glDeleteProgram(game_state->square_shader_program);
 		return FAILURE;
 	}
+
+	// enable transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	game_state->u_dimensions_location = glGetUniformLocation(game_state->square_shader_program, "u_dimensions");
 	game_state->u_position_location   = glGetUniformLocation(game_state->square_shader_program, "u_position");
@@ -91,21 +95,21 @@ void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 }
 
 void render_menu(game_state_t* game_state) {
-	glClearColor(COLOUR_BLACK, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glBindVertexArray(game_state->square_VAO);
 	glUseProgram(game_state->texture_shader_program);
 
 	glUniform2f(game_state->u_texture_dimensions_location, TITLE_WIDTH, TITLE_HEIGHT);
-	glUniform2f(game_state->u_texture_position_location, 0, -TITLE_HEIGHT / 2.0f);
+	glUniform2f(game_state->u_texture_position_location, 0, game_state->GAME_HEIGHT / 2.0f);
 
 	glBindTexture(GL_TEXTURE_2D, game_state->texture_title);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
-void render_playing(game_state_t* game_state) {
-	glClearColor(COLOUR_BLACK, 1.0f);
+void render_game(game_state_t* game_state) {
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// prepare to draw squares
@@ -130,7 +134,7 @@ void render_playing(game_state_t* game_state) {
 	}
 }
 void render_game_over(game_state_t* game_state) {
-	glClearColor(COLOUR_BLACK, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -140,7 +144,7 @@ void render(game_state_t* game_state) {
 			render_menu(game_state);
 			break;
 		case SCENE_PLAYING:
-			render_playing(game_state);
+			render_game(game_state);
 			break;
 		case SCENE_GAME_OVER:
 			render_game_over(game_state);

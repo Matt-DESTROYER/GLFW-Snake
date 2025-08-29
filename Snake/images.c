@@ -5,13 +5,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#define RGB_CHANNELS  3
+#define RGBA_CHANNELS 4
+
 image_t* load_image(const char* file) {
 	image_t* image = malloc(sizeof(image_t));
 	if (image == NULL) {
 		return NULL;
 	}
 
-	image->data = stbi_load(file, &image->width, &image->height, &image->channels, 4);
+	image->data = stbi_load(file, &image->width, &image->height, &image->channels, RGBA_CHANNELS);
 
 	return image;
 }

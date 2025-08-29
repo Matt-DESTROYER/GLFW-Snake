@@ -31,7 +31,7 @@ void restart_game(game_state_t* game_state) {
 	game_state->input.last_direction = INPUT_NULL;
 }
 
-int init_game(void) {
+int init_game() {
 	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
 	}
@@ -51,7 +51,6 @@ int init_game(void) {
 
 	// initialise the game's state {
 	static game_state_t game_state;
-	game_state.score = 0;
 	game_state.high_score = 0;
 
 	for (size_t i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
@@ -99,6 +98,8 @@ void game_loop(GLFWwindow* window, game_state_t* game_state) {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
+		//printf("Scene: %i\n", game_state->scene);
+
 		current_time = glfwGetTime();
 		delta_time = current_time - previous_time;
 		previous_time = current_time;
@@ -110,7 +111,7 @@ void game_loop(GLFWwindow* window, game_state_t* game_state) {
 	}
 }
 
-void update(game_state_t* game_state, double delta_time, double current_time) {
+void update_game(game_state_t * game_state, double delta_time, double current_time) {
 	if (current_time - game_state->last_tick > TICK_DELTA) {
 		// move snake {
 		for (size_t i = 0; i < game_state->food_count - 1; i++) {
@@ -145,6 +146,7 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 			game_state->snake[0].y < GRID_HEIGHT_BOTTOM ||
 			game_state->snake[0].y > GRID_HEIGHT_TOP) {
 			game_state->game_over = true;
+			printf("out of bounds detected...\n");
 		}
 		// }
 
@@ -153,6 +155,7 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 			if (game_state->snake[0].x == game_state->snake[i].x &&
 				game_state->snake[0].y == game_state->snake[i].y) {
 				game_state->game_over = true;
+				printf("self collision detected...\n");
 			}
 		}
 		// }
@@ -180,6 +183,25 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 			}
 		}
 		// }
+	}
+}
+void update(game_state_t* game_state, double delta_time, double current_time) {
+	switch (game_state->scene) {
+	case SCENE_MENU:
+		break;
+	case SCENE_PLAYING:
+		update_game(game_state, delta_time, current_time);
+		if (game_state->game_over) {
+			if (game_state->score > game_state->high_score) {
+				game_state->high_score = game_state->score;
+			}
+			game_state->scene = SCENE_GAME_OVER;
+		}
+		break;
+	case SCENE_GAME_OVER:
+		break;
+	default:
+		break;
 	}
 }
 

@@ -9,7 +9,8 @@ void game_menu_input(game_state_t* game_state, int action, int key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
 				break;
-			default:
+			case GLFW_KEY_SPACE:
+			case GLFW_KEY_ENTER:
 				game_state->scene = SCENE_PLAYING;
 				break;
 		}
@@ -55,7 +56,9 @@ void game_over_input(game_state_t* game_state, int action, int key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
 				break;
-			default:
+			case GLFW_KEY_SPACE:
+			case GLFW_KEY_ENTER:
+				restart_game(game_state);
 				game_state->scene = SCENE_MENU;
 				break;
 		}

@@ -18,8 +18,8 @@
 #define TICK_RATE   3.0
 #define TICK_DELTA  (1.0 / TICK_RATE)
 
-#define TITLE_WIDTH  600
-#define TITLE_HEIGHT 300
+#define TITLE_WIDTH  1000
+#define TITLE_HEIGHT 600
 
 typedef enum game_scene {
 	SCENE_MENU,
@@ -62,7 +62,8 @@ typedef struct game_state {
 	GLuint texture_title;
 } game_state_t;
 
-int init_game(void);
+void restart_game(game_state_t* game_state);
+int init_game();
 void game_loop(GLFWwindow* window, game_state_t* game_state);
 void update(game_state_t* game_state, double delta_time, double current_time);
 void end_game(GLFWwindow* window);
