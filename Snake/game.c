@@ -28,7 +28,8 @@ void restart_game(game_state_t* game_state) {
 	game_state->paused = false;
 	game_state->speed = 1.0;
 
-	game_state->input.last_direction = INPUT_NULL;
+	game_state->input.last_direction = DIRECTION_NULL;
+	game_state->input.new_direction = DIRECTION_NULL;
 }
 
 int init_game() {
@@ -98,8 +99,6 @@ void game_loop(GLFWwindow* window, game_state_t* game_state) {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
-		//printf("Scene: %i\n", game_state->scene);
-
 		current_time = glfwGetTime();
 		delta_time = current_time - previous_time;
 		previous_time = current_time;
@@ -120,23 +119,23 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 			game_state->snake[index].x = game_state->snake[index - 1].x;
 			game_state->snake[index].y = game_state->snake[index - 1].y;
 		}
-		switch (game_state->input.new_direciton) {
-			case INPUT_LEFT:
+		switch (game_state->input.new_direction) {
+			case DIRECTION_LEFT:
 				game_state->snake[0].x--;
 				break;
-			case INPUT_UP:
+			case DIRECTION_UP:
 				game_state->snake[0].y++;
 				break;
-			case INPUT_RIGHT:
+			case DIRECTION_RIGHT:
 				game_state->snake[0].x++;
 				break;
-			case INPUT_DOWN:
+			case DIRECTION_DOWN:
 				game_state->snake[0].y--;
 				break;
 			default:
 				break;
 		}
-		game_state->input.last_direction = game_state->input.new_direciton;
+		game_state->input.last_direction = game_state->input.new_direction;
 		game_state->last_tick = current_time;
 		// }
 
@@ -146,7 +145,6 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 			game_state->snake[0].y < GRID_HEIGHT_BOTTOM ||
 			game_state->snake[0].y > GRID_HEIGHT_TOP) {
 			game_state->game_over = true;
-			printf("out of bounds detected...\n");
 		}
 		// }
 
@@ -155,7 +153,6 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 			if (game_state->snake[0].x == game_state->snake[i].x &&
 				game_state->snake[0].y == game_state->snake[i].y) {
 				game_state->game_over = true;
-				printf("self collision detected...\n");
 			}
 		}
 		// }
@@ -170,8 +167,8 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 			// prevent apple from spawning inside snake
 			bool in_snake = true;
 			while (in_snake) {
-				game_state->apple.x = (float)((rand() % GRID_WIDTH) + GRID_WIDTH_LEFT);
-				game_state->apple.y = (float)((rand() % GRID_HEIGHT) + GRID_HEIGHT_BOTTOM);
+				game_state->apple.x = (rand() % GRID_WIDTH) + GRID_WIDTH_LEFT;
+				game_state->apple.y = (rand() % GRID_HEIGHT) + GRID_HEIGHT_BOTTOM;
 
 				in_snake = false;
 				for (size_t i = 0; i < game_state->food_count; i++) {
@@ -187,21 +184,25 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 }
 void update(game_state_t* game_state, double delta_time, double current_time) {
 	switch (game_state->scene) {
-	case SCENE_MENU:
-		break;
-	case SCENE_PLAYING:
-		update_game(game_state, delta_time, current_time);
-		if (game_state->game_over) {
-			if (game_state->score > game_state->high_score) {
-				game_state->high_score = game_state->score;
+		case SCENE_MENU:
+			break;
+		case SCENE_HOW:
+			break;
+		case SCENE_CREDITS:
+			break;
+		case SCENE_PLAYING:
+			update_game(game_state, delta_time, current_time);
+			if (game_state->game_over) {
+				if (game_state->score > game_state->high_score) {
+					game_state->high_score = game_state->score;
+				}
+				game_state->scene = SCENE_GAME_OVER;
 			}
-			game_state->scene = SCENE_GAME_OVER;
-		}
-		break;
-	case SCENE_GAME_OVER:
-		break;
-	default:
-		break;
+			break;
+		case SCENE_GAME_OVER:
+			break;
+		default:
+			break;
 	}
 }
 

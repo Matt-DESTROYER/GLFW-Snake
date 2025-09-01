@@ -23,6 +23,8 @@
 
 typedef enum game_scene {
 	SCENE_MENU,
+	SCENE_HOW,
+	SCENE_CREDITS,
 	SCENE_PLAYING,
 	SCENE_GAME_OVER
 } game_scene_t;
@@ -44,14 +46,14 @@ typedef struct game_state {
 	game_scene_t scene;
 
 	// TEMP
-	GLint square_shader_program;
-	GLint square_VAO;
-	GLint square_VBO;
-	GLint square_EBO;
+	GLint rect_shader_program;
+	GLint rect_VAO;
+	GLint rect_VBO;
+	GLint rect_EBO;
 
-	GLint u_dimensions_location;
+	GLint u_screen_location;
 	GLint u_position_location;
-	GLint u_size_location;
+	GLint u_dimensions_location;
 	GLint u_colour_location;
 
 	GLint texture_shader_program;

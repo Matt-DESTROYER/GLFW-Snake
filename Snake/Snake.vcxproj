@@ -215,8 +215,8 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\square.frag" />
-    <None Include="Shaders\square.vert" />
+    <None Include="Shaders\rect.frag" />
+    <None Include="Shaders\rect.vert" />
     <None Include="Shaders\texture.frag" />
     <None Include="Shaders\texture.vert" />
   </ItemGroup>

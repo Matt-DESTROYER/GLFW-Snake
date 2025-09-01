@@ -21,26 +21,26 @@ void game_playing_input(game_state_t* game_state, int action, int key) {
 		switch (key) {
 			case GLFW_KEY_A:
 			case GLFW_KEY_LEFT:
-				if (game_state->input.last_direction != INPUT_RIGHT)
-					game_state->input.new_direciton = INPUT_LEFT;
+				if (game_state->input.last_direction != DIRECTION_RIGHT)
+					game_state->input.new_direction = DIRECTION_LEFT;
 				break;
 
 			case GLFW_KEY_W:
 			case GLFW_KEY_UP:
-				if (game_state->input.last_direction != INPUT_DOWN)
-					game_state->input.new_direciton = INPUT_UP;
+				if (game_state->input.last_direction != DIRECTION_DOWN)
+					game_state->input.new_direction = DIRECTION_UP;
 				break;
 
 			case GLFW_KEY_D:
 			case GLFW_KEY_RIGHT:
-				if (game_state->input.last_direction != INPUT_LEFT)
-					game_state->input.new_direciton = INPUT_RIGHT;
+				if (game_state->input.last_direction != DIRECTION_LEFT)
+					game_state->input.new_direction = DIRECTION_RIGHT;
 				break;
 
 			case GLFW_KEY_S:
 			case GLFW_KEY_DOWN:
-				if (game_state->input.last_direction != INPUT_UP)
-					game_state->input.new_direciton = INPUT_DOWN;
+				if (game_state->input.last_direction != DIRECTION_UP)
+					game_state->input.new_direction = DIRECTION_DOWN;
 				break;
 
 			case GLFW_KEY_P:

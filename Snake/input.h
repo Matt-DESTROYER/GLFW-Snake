@@ -4,15 +4,18 @@
 #include "glfw_includes.h"
 #include "point.h"
 
-#define INPUT_NULL  0
-#define INPUT_LEFT  1
-#define INPUT_UP    2
-#define INPUT_RIGHT 3
-#define INPUT_DOWN  4
+
+typedef enum direction {
+	DIRECTION_NULL,
+	DIRECTION_LEFT,
+	DIRECTION_UP,
+	DIRECTION_RIGHT,
+	DIRECTION_DOWN
+} direction_t;
 
 typedef struct input {
-	unsigned char new_direciton;
-	unsigned char last_direction;
+	direction_t new_direction;
+	direction_t last_direction;
 	point_t mouse;
 } input_t;
 
