@@ -7,8 +7,8 @@ uniform vec2 u_position;
 uniform vec2 u_dimensions;
 
 void main() {
-	vec2 position = (v_position * (u_dimensions / 2)) / u_screen;
-	position += u_position / u_screen;
+	vec2 position = (v_position * (u_dimensions / 2)) / u_screen; // scaling
+	position += u_position / u_screen; // translation
 
-	gl_Position = vec4(position, 0.0, 1.0);
+	gl_Position = vec4(2 * position, 0.0, 1.0);
 }

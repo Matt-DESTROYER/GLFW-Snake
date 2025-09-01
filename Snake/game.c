@@ -32,6 +32,15 @@ void restart_game(game_state_t* game_state) {
 	game_state->input.new_direction = DIRECTION_NULL;
 }
 
+float calc_size(int width, int height) {
+	float cell_width = width / (float)GRID_WIDTH;
+	float cell_height = height / (float)GRID_HEIGHT;
+	if (cell_width < cell_height) {
+		return cell_width;
+	}
+	return cell_height;
+}
+
 int init_game() {
 	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
@@ -64,7 +73,8 @@ int init_game() {
 
 	game_state.GAME_WIDTH  = (float)GAME_WIDTH;
 	game_state.GAME_HEIGHT = (float)GAME_HEIGHT;
-	game_state.SIZE = (float)GAME_WIDTH / (float)GRID_WIDTH;
+
+	game_state.SIZE = calc_size((float)GAME_WIDTH, (float)GAME_HEIGHT);
 
 	restart_game(&game_state);
 

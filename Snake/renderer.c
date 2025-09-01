@@ -102,7 +102,7 @@ void render_menu(game_state_t* game_state) {
 	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
 
 	glUniform2f(game_state->u_texture_dimensions_location, TITLE_WIDTH, TITLE_HEIGHT);
-	glUniform2f(game_state->u_texture_position_location, 0, game_state->GAME_HEIGHT / 2.0f);
+	glUniform2f(game_state->u_texture_position_location, 0, game_state->GAME_HEIGHT / 4.0f);
 
 	glBindTexture(GL_TEXTURE_2D, game_state->texture_title);
 
@@ -133,6 +133,29 @@ void render_game(game_state_t* game_state) {
 		glUniform2f(game_state->u_position_location, game_state->snake[i].x * game_state->SIZE, game_state->snake[i].y * game_state->SIZE);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
+
+	// render border
+	glUniform4f(game_state->u_colour_location, COLOUR_GREY, 1.0f);
+	float width = (game_state->GAME_WIDTH - (float)GRID_WIDTH * game_state->SIZE) / 2;
+	if (width > 0) {
+		glUniform2f(game_state->u_dimensions_location, width, game_state->GAME_HEIGHT);
+		// left side
+		glUniform2f(game_state->u_position_location, width / 2 - game_state->GAME_WIDTH / 2, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// right side
+		glUniform2f(game_state->u_position_location, game_state->GAME_WIDTH / 2 - width / 2, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}/*
+	float height = (game_state->GAME_HEIGHT - (float)GRID_HEIGHT * game_state->SIZE) / 2;
+	if (height > 0) {
+		glUniform2f(game_state->u_dimensions_location, game_state->GAME_WIDTH, height);
+		// top side
+		glUniform2f(game_state->u_position_location, width / 2 - game_state->GAME_WIDTH / 2, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// bottom side
+		glUniform2f(game_state->u_position_location, game_state->GAME_WIDTH / 2 - width / 2, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}*/
 }
 void render_game_over(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
