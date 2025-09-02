@@ -163,6 +163,58 @@ sprite_t* pick_digit_sprite(game_state_t* game_state, short digit) {
 	}
 }
 
+void render_score(game_state_t* game_state, int x, int y) {
+	x -= 10;
+	y += 10;
+	// score text
+	game_state->score_sprite->position = (point_t){
+		.x = x,
+		.y = y
+	};
+	render_sprite(game_state, game_state->score_sprite);
+
+	// create a linked-list to store each digit
+	struct score_digit {
+		int val;
+		struct score_digit* next;
+	};
+
+	struct score_digit* digits = NULL;
+	size_t digit_count = 0;
+
+	int score = game_state->score;
+
+	// calculate each base10 digit
+	while (score > 0) {
+		struct score_digit* new_digit = malloc(sizeof(struct score_digit));
+		if (new_digit == NULL) break;
+
+		new_digit->val = score % 10; // current digit
+		digit_count++;               // increment counter
+		new_digit->next = digits;
+		digits = new_digit;
+		score /= 10;                 // discard current digit (by integer division)
+	}
+	int offset = (int)((float)game_state->score_sprite->dimensions.x * game_state->score_sprite->scale.x / 2.0f) + 20;
+	if (digit_count == 0) {
+		game_state->num_0_sprite->position = (point_t){ .x = x + offset, .y = y };
+		render_sprite(game_state, game_state->num_0_sprite);
+	}
+	// iterate through each digit
+	while (digits != NULL) {
+		sprite_t* digit_sprite = pick_digit_sprite(game_state, digits->val);
+		digit_sprite->position = (point_t){ .x = x + offset, .y = y };
+		render_sprite(game_state, digit_sprite);
+
+		offset += 20;
+
+		// cleanup
+		struct score_digit* temp = digits->next;
+		free(digits);
+		digits = temp;
+	}
+}
+
 void render_menu(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -273,14 +325,12 @@ void render_game(game_state_t* game_state) {
 	glUseProgram(game_state->texture_shader_program);
 	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
 
-	// score text
-	game_state->score_sprite->position = (point_t){
-		.x = (int)(GRID_WIDTH_LEFT * game_state->SIZE) + (int)((float)game_state->score_sprite->dimensions.x * game_state->score_sprite->scale.x / 2.0f) - 20,
-		.y = (int)(GRID_HEIGHT_TOP * game_state->SIZE) + (int)((float)game_state->score_sprite->dimensions.y * game_state->score_sprite->scale.y / 2.0f) - 10
-	};
-	render_sprite(game_state, game_state->score_sprite);
-
-	// score number
+	// render the game score
+	render_score(
+		game_state,
+		(int)(GRID_WIDTH_LEFT * game_state->SIZE + (float)game_state->score_sprite->dimensions.x * game_state->score_sprite->scale.x / 2.0f),
+		(int)(GRID_HEIGHT_TOP * game_state->SIZE - (float)game_state->score_sprite->dimensions.y * game_state->score_sprite->scale.y / 2.0f)
+	);
 }
 void render_game_over(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -299,6 +349,9 @@ void render_game_over(game_state_t* game_state) {
 
 	// back button
 	render_sprite(game_state, game_state->back_arrow_sprite);
+	
+	// render the game score
+	render_score(game_state, 0, 0);
 }
 
 void render(game_state_t* game_state) {

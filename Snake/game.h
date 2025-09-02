@@ -11,13 +11,13 @@
 
 #define GRID_WIDTH          19
 #define GRID_HEIGHT         11
-#define GRID_WIDTH_LEFT    -(GRID_WIDTH / 2)
-#define GRID_WIDTH_RIGHT    (GRID_WIDTH / 2)
+#define GRID_WIDTH_LEFT    -(GRID_WIDTH  / 2)
+#define GRID_WIDTH_RIGHT    (GRID_WIDTH  / 2)
 #define GRID_HEIGHT_TOP     (GRID_HEIGHT / 2)
 #define GRID_HEIGHT_BOTTOM -(GRID_HEIGHT / 2)
 
-#define TICK_RATE   3.0
-#define TICK_DELTA  (1.0 / TICK_RATE)
+#define TICK_RATE   3.0f
+#define TICK_DELTA  (1.0f / TICK_RATE)
 
 #define TITLE_WIDTH  500
 #define TITLE_HEIGHT 300

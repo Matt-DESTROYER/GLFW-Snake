@@ -108,8 +108,8 @@ int init_game() {
 	game_state.back_arrow_sprite = create_sprite("./Assets/back-arrow.png");
 	game_state.back_arrow_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
 	game_state.back_arrow_sprite->position = (point_t){
-		.x = game_state.back_arrow_sprite->dimensions.x * game_state.back_arrow_sprite->scale.x - game_state.GAME_WIDTH / 2,
-		.y = game_state.GAME_HEIGHT / 2 - game_state.back_arrow_sprite->dimensions.y * game_state.back_arrow_sprite->scale.y
+		.x = (int)((float)game_state.back_arrow_sprite->dimensions.x * game_state.back_arrow_sprite->scale.x - (float)game_state.GAME_WIDTH / 2.0f),
+		.y = (int)((float)game_state.GAME_HEIGHT / 2.0f - (float)game_state.back_arrow_sprite->dimensions.y * game_state.back_arrow_sprite->scale.y)
 	};
 
 	pointf_t button_scale   = (pointf_t){ .x = 0.2f, .y = 0.2f };
@@ -155,16 +155,27 @@ int init_game() {
 	game_state.score_sprite = create_sprite("./Assets/score.png");
 	game_state.score_sprite->scale = (pointf_t){ .x = 0.1f, .y = 0.1f };
 
+	pointf_t number_scale = (pointf_t){ .x = 0.125f, .y = 0.125f };
 	game_state.num_0_sprite = create_sprite("./Assets/0.png");
+	game_state.num_0_sprite->scale = number_scale;
 	game_state.num_1_sprite = create_sprite("./Assets/1.png");
+	game_state.num_1_sprite->scale = number_scale;
 	game_state.num_2_sprite = create_sprite("./Assets/2.png");
+	game_state.num_2_sprite->scale = number_scale;
 	game_state.num_3_sprite = create_sprite("./Assets/3.png");
+	game_state.num_3_sprite->scale = number_scale;
 	game_state.num_4_sprite = create_sprite("./Assets/4.png");
+	game_state.num_4_sprite->scale = number_scale;
 	game_state.num_5_sprite = create_sprite("./Assets/5.png");
+	game_state.num_5_sprite->scale = number_scale;
 	game_state.num_6_sprite = create_sprite("./Assets/6.png");
+	game_state.num_6_sprite->scale = number_scale;
 	game_state.num_7_sprite = create_sprite("./Assets/7.png");
+	game_state.num_7_sprite->scale = number_scale;
 	game_state.num_8_sprite = create_sprite("./Assets/8.png");
+	game_state.num_8_sprite->scale = number_scale;
 	game_state.num_9_sprite = create_sprite("./Assets/9.png");
+	game_state.num_9_sprite->scale = number_scale;
 	// }
 	
 	glfwSetWindowUserPointer(window, &game_state);
