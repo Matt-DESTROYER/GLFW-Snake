@@ -21,6 +21,7 @@ int init_glfw(GLFWerrorfun error_callback) {
 	return SUCCESS;
 }
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
@@ -45,7 +46,7 @@ GLFWwindow* init_glfw_window(int window_width, int window_height,
 	init_input(window);
 
 	glViewport(0, 0, window_width, window_height);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(window, (GLFWframebuffersizefun)framebuffer_size_callback);
 
 	return window;
 }

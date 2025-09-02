@@ -43,6 +43,7 @@ float calc_size(int width, int height) {
 
 void window_size_callback(GLFWwindow* window, int width, int height) {
 	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
+
 	game_state->GAME_WIDTH = width;
 	game_state->GAME_HEIGHT = height;
 
@@ -53,6 +54,11 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 
 	glUseProgram(game_state->texture_shader_program);
 	glUniform2f(game_state->u_texture_screen_dimensions_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
+
+	// (so we can see the resizing in real-time)
+	render(game_state);
+	glfwSwapBuffers(window);
+	glFinish(); // make sure all rendering is finished before allowing anything to continue
 }
 
 int init_game() {
@@ -73,6 +79,8 @@ int init_game() {
 	if (window == NULL) {
 		return EXIT_FAILURE;
 	}
+
+	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)window_size_callback);
 
 	// initialise the game's state {
 	static game_state_t game_state;
@@ -124,11 +132,17 @@ int init_game() {
 	game_state.credits_clicked_sprite->scale = button_scale;
 
 	game_state.title_sprite = create_sprite("./Assets/title.png");
+	game_state.title_sprite->position = (point_t){ .x = 0, .y = 225 };
+	game_state.title_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
 	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
 	game_state.credits_matty_sprite = create_sprite("./Assets/credits-matty.png");
 	game_state.how_sprite = create_sprite("./Assets/how-button.png");
 	game_state.game_over_sprite = create_sprite("./Assets/game-over.png");
+	game_state.game_over_sprite->position = (point_t){ .x = 0, .y = 200 };
+	game_state.game_over_sprite->scale = (pointf_t){ .x = 0.75f, .y = 0.75f };
 	game_state.try_again_sprite = create_sprite("./Assets/try-again.png");
+	game_state.try_again_sprite->position = (point_t){ .x = 0, .y = -200 };
+	game_state.try_again_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
 	game_state.score_sprite = create_sprite("./Assets/score.png");
 
 	game_state.num_0_sprite = create_sprite("./Assets/0.png");
@@ -144,8 +158,6 @@ int init_game() {
 	// }
 	
 	glfwSetWindowUserPointer(window, &game_state);
-
-	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)window_size_callback);
 
 	if (init_renderer(&game_state) == FAILURE) {
 		end_game(window);

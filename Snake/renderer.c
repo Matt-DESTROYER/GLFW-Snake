@@ -123,19 +123,57 @@ void setup_geometry(uint32_t* VAO, uint32_t* VBO, uint32_t* EBO) {
 	glBindVertexArray(0);
 }
 
+void render_sprite(game_state_t* game_state, sprite_t* sprite) {
+	// game over
+	glUniform2f(game_state->u_texture_dimensions_location,
+		(GLfloat)sprite->dimensions.x * sprite->scale.x,
+		(GLfloat)sprite->dimensions.y * sprite->scale.y);
+	glUniform2f(game_state->u_texture_position_location,
+		(GLfloat)sprite->position.x,
+		(GLfloat)sprite->position.y);
+	glBindTexture(GL_TEXTURE_2D, sprite->texture);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+sprite_t* pick_digit_sprite(game_state_t* game_state, short digit) {
+	if (digit < 0) digit = -digit;
+	switch (digit) {
+		case 0:
+			return game_state->num_0_sprite;
+		case 1:
+			return game_state->num_1_sprite;
+		case 2:
+			return game_state->num_2_sprite;
+		case 3:
+			return game_state->num_3_sprite;
+		case 4:
+			return game_state->num_4_sprite;
+		case 5:
+			return game_state->num_5_sprite;
+		case 6:
+			return game_state->num_6_sprite;
+		case 7:
+			return game_state->num_7_sprite;
+		case 8:
+			return game_state->num_8_sprite;
+		case 9:
+			return game_state->num_9_sprite;
+		default:
+			return game_state->num_0_sprite;
+	}
+}
+
 void render_menu(game_state_t* game_state) {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// prepare to render textures
 	glBindVertexArray(game_state->rect_VAO);
 	glUseProgram(game_state->texture_shader_program);
 	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
 
 	// title/logo
-	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)game_state->title_sprite->dimensions.x / 2.5f, (GLfloat)game_state->title_sprite->dimensions.y / 2.5f);
-	glUniform2f(game_state->u_texture_position_location, 0, 225);
-	glBindTexture(GL_TEXTURE_2D, game_state->title_sprite->texture);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	render_sprite(game_state, game_state->title_sprite);
 
 	// start button
 	sprite_t* start_button = game_state->start_idle_sprite;
@@ -144,15 +182,13 @@ void render_menu(game_state_t* game_state) {
 		game_state->input.mouse.y > start_button->position.y - start_button->dimensions.y * start_button->scale.y / 2.0f &&
 		game_state->input.mouse.y < start_button->position.y + start_button->dimensions.y * start_button->scale.y / 2.0f) {
 		if (game_state->input.mouse_down) {
-			start_button = game_state->start_clicked_sprite;
+			render_sprite(game_state, game_state->start_clicked_sprite);
 		} else {
-			start_button = game_state->start_hover_sprite;
+			render_sprite(game_state, game_state->start_hover_sprite);
 		}
+	} else {
+		render_sprite(game_state, game_state->start_idle_sprite);
 	}
-	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)start_button->dimensions.x * start_button->scale.x, (GLfloat)start_button->dimensions.y * start_button->scale.y);
-	glUniform2f(game_state->u_texture_position_location, (GLfloat)start_button->position.x, (GLfloat)start_button->position.y);
-	glBindTexture(GL_TEXTURE_2D, start_button->texture);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	// credits button
 	sprite_t* credits_button = game_state->credits_idle_sprite;
@@ -161,16 +197,12 @@ void render_menu(game_state_t* game_state) {
 		game_state->input.mouse.y > credits_button->position.y - credits_button->dimensions.y * credits_button->scale.y / 2.0f &&
 		game_state->input.mouse.y < credits_button->position.y + credits_button->dimensions.y * credits_button->scale.y / 2.0f) {
 		if (game_state->input.mouse_down) {
-			credits_button = game_state->credits_clicked_sprite;
-		}
-		else {
-			credits_button = game_state->credits_hover_sprite;
+			render_sprite(game_state, game_state->credits_clicked_sprite);
+		} else {
+			render_sprite(game_state, game_state->credits_hover_sprite);
 		}
 	}
-	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)credits_button->dimensions.x * credits_button->scale.x, (GLfloat)credits_button->dimensions.y * credits_button->scale.y);
-	glUniform2f(game_state->u_texture_position_location, (GLfloat)credits_button->position.x, (GLfloat)credits_button->position.y);
-	glBindTexture(GL_TEXTURE_2D, credits_button->texture);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	render_sprite(game_state, game_state->credits_idle_sprite);
 
 }
 void render_game(game_state_t* game_state) {
@@ -225,6 +257,17 @@ void render_game(game_state_t* game_state) {
 void render_game_over(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// prepare to render textures
+	glBindVertexArray(game_state->rect_VAO);
+	glUseProgram(game_state->texture_shader_program);
+	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
+
+	// game over
+	render_sprite(game_state, game_state->game_over_sprite);
+
+	// try again
+	render_sprite(game_state, game_state->try_again_sprite);
 }
 
 void render(game_state_t* game_state) {

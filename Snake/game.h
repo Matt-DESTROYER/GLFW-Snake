@@ -31,11 +31,11 @@ typedef enum game_scene {
 } game_scene_t;
 
 typedef struct game_state {
-	uint32_t score;
-	uint32_t high_score;
+	short score;
+	short high_score;
 	point_t snake[GRID_WIDTH * GRID_HEIGHT];
 	point_t apple;
-	uint32_t food_count;
+	short food_count;
 	bool game_over;
 	bool paused;
 	double speed;
