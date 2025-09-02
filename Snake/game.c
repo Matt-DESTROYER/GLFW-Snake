@@ -96,24 +96,32 @@ int init_game() {
 	game_state.scene = SCENE_MENU;
 	// }
 
-	// LOAD OUR FIRST IMAGE!!!
-	image_t* image = load_image("Assets/title.png");
-	game_state.texture_title = create_texture(image);
-	free_image(image);
-
 	// load sprites {
-	// sprites
-	//game_state.apple_sprite = create_sprite("./Assets/");
-
 	game_state.back_arrow_sprite = create_sprite("./Assets/back-arrow.png");
 
-	game_state.start_idle_sprite = create_sprite("./Assets/start-button-idle.png");
-	game_state.start_hover_sprite = create_sprite("./Assets/start-button-hover.png");
-	game_state.start_clicked_sprite = create_sprite("./Assets/start-button-clicked.png");
+	pointf_t button_scale   = (pointf_t){ .x = 0.2f, .y = 0.2f };
 
+	point_t start_sprite_position = (point_t){ .x = 0, .y = 0 };
+	game_state.start_idle_sprite = create_sprite("./Assets/start-button-idle.png");
+	game_state.start_idle_sprite->position = start_sprite_position;
+	game_state.start_idle_sprite->scale    = button_scale;
+	game_state.start_hover_sprite = create_sprite("./Assets/start-button-hover.png");
+	game_state.start_hover_sprite->position = start_sprite_position;
+	game_state.start_hover_sprite->scale = button_scale;
+	game_state.start_clicked_sprite = create_sprite("./Assets/start-button-clicked.png");
+	game_state.start_clicked_sprite->position = start_sprite_position;
+	game_state.start_clicked_sprite->scale = button_scale;
+
+	point_t cancel_sprite_position = (point_t){ .x = 0, .y = -150 };
 	game_state.credits_idle_sprite = create_sprite("./Assets/credits-button-idle.png");
+	game_state.credits_idle_sprite->position = cancel_sprite_position;
+	game_state.credits_idle_sprite->scale = button_scale;
 	game_state.credits_hover_sprite = create_sprite("./Assets/credits-button-hover.png");
+	game_state.credits_hover_sprite->position = cancel_sprite_position;
+	game_state.credits_hover_sprite->scale = button_scale;
 	game_state.credits_clicked_sprite = create_sprite("./Assets/credits-button-clicked.png");
+	game_state.credits_clicked_sprite->position = cancel_sprite_position;
+	game_state.credits_clicked_sprite->scale = button_scale;
 
 	game_state.title_sprite = create_sprite("./Assets/title.png");
 	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
@@ -218,7 +226,8 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 		// }
 
 		//  apple collision checks {
-		if (point_equal(&game_state->snake[0], &game_state->apple)) {
+		if (game_state->snake[0].x == game_state->apple.x &&
+			game_state->snake[0].y == game_state->apple.y) {
 			game_state->snake[game_state->food_count].x = game_state->snake[game_state->food_count - 1].x;
 			game_state->snake[game_state->food_count].y = game_state->snake[game_state->food_count - 1].y;
 			game_state->food_count++;
@@ -232,7 +241,8 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 
 				in_snake = false;
 				for (size_t i = 0; i < game_state->food_count; i++) {
-					if (point_equal(&game_state->snake[i], &game_state->apple)) {
+					if (game_state->snake[i].x == game_state->apple.x &&
+						game_state->snake[i].y == game_state->apple.y) {
 						in_snake = true;
 						break;
 					}
@@ -265,6 +275,8 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 			break;
 	}
 }
+
+void on_click(game_state_t* game_state) {}
 
 void end_game(GLFWwindow* window) {
 	glfwDestroyWindow(window);

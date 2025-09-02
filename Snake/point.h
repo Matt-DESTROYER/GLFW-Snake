@@ -6,7 +6,8 @@
 typedef struct point {
 	int x, y;
 } point_t;
-
-bool point_equal(point_t* p1, point_t* p2);
+typedef struct pointf {
+	float x, y;
+} pointf_t;
 
 #endif

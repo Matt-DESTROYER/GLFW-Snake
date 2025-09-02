@@ -17,6 +17,7 @@ typedef struct input {
 	direction_t new_direction;
 	direction_t last_direction;
 	point_t mouse;
+	bool mouse_down;
 } input_t;
 
 void init_input(GLFWwindow* window);

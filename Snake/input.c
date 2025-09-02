@@ -84,11 +84,24 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
 static void cursor_position_callback(GLFWwindow* window,
 	double xpos, double ypos) {
 	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
-	game_state->input.mouse.x = (float)xpos;
-	game_state->input.mouse.y = (float)ypos;
+	game_state->input.mouse.x = (int)xpos - game_state->GAME_WIDTH / 2;
+	game_state->input.mouse.y = -((int)(ypos - game_state->GAME_HEIGHT / 2));
+}
+
+static void mouse_button_callback(GLFWwindow* window,
+	int button, int action, int mods) {
+	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		if (action == GLFW_PRESS) {
+			game_state->input.mouse_down = true;
+		} else if (action == GLFW_RELEASE) {
+			game_state->input.mouse_down = false;
+		}
+	}
 }
 
 void init_input(GLFWwindow* window) {
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetKeyCallback(window, (GLFWkeyfun)key_callback);
+	glfwSetCursorPosCallback(window, (GLFWcursorposfun)cursor_position_callback);
+	glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)mouse_button_callback);
 }

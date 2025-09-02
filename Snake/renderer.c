@@ -5,6 +5,7 @@
 
 #include "glfw_includes.h"
 #include "shaders.h"
+#include "sprite.h"
 
 #define FAILURE 0
 #define SUCCESS 1
@@ -57,6 +58,35 @@ int init_renderer(game_state_t* game_state) {
 	glUseProgram(game_state->texture_shader_program);
 	glUniform2f(game_state->u_texture_screen_dimensions_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
 
+	sprite_load_shader_program(game_state->back_arrow_sprite, game_state->texture_shader_program);
+
+	sprite_load_shader_program(game_state->start_idle_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->start_hover_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->start_clicked_sprite, game_state->texture_shader_program);
+
+	sprite_load_shader_program(game_state->credits_idle_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->credits_hover_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->credits_clicked_sprite, game_state->texture_shader_program);
+
+	sprite_load_shader_program(game_state->title_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->credits_chrissy_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->credits_matty_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->how_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->game_over_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->try_again_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->score_sprite, game_state->texture_shader_program);
+
+	sprite_load_shader_program(game_state->num_0_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_1_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_2_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_3_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_4_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_5_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_6_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_7_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_8_sprite, game_state->texture_shader_program);
+	sprite_load_shader_program(game_state->num_9_sprite, game_state->texture_shader_program);
+
 	return SUCCESS;
 }
 
@@ -101,12 +131,47 @@ void render_menu(game_state_t* game_state) {
 	glUseProgram(game_state->texture_shader_program);
 	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
 
-	glUniform2f(game_state->u_texture_dimensions_location, TITLE_WIDTH, TITLE_HEIGHT);
-	glUniform2f(game_state->u_texture_position_location, 0, game_state->GAME_HEIGHT / 4.0f);
-
-	glBindTexture(GL_TEXTURE_2D, game_state->texture_title);
-
+	// title/logo
+	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)game_state->title_sprite->dimensions.x / 2.5f, (GLfloat)game_state->title_sprite->dimensions.y / 2.5f);
+	glUniform2f(game_state->u_texture_position_location, 0, 225);
+	glBindTexture(GL_TEXTURE_2D, game_state->title_sprite->texture);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// start button
+	sprite_t* start_button = game_state->start_idle_sprite;
+	if (game_state->input.mouse.x > start_button->position.x - start_button->dimensions.x * start_button->scale.x / 2.0f &&
+		game_state->input.mouse.x < start_button->position.x + start_button->dimensions.x * start_button->scale.x / 2.0f &&
+		game_state->input.mouse.y > start_button->position.y - start_button->dimensions.y * start_button->scale.y / 2.0f &&
+		game_state->input.mouse.y < start_button->position.y + start_button->dimensions.y * start_button->scale.y / 2.0f) {
+		if (game_state->input.mouse_down) {
+			start_button = game_state->start_clicked_sprite;
+		} else {
+			start_button = game_state->start_hover_sprite;
+		}
+	}
+	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)start_button->dimensions.x * start_button->scale.x, (GLfloat)start_button->dimensions.y * start_button->scale.y);
+	glUniform2f(game_state->u_texture_position_location, (GLfloat)start_button->position.x, (GLfloat)start_button->position.y);
+	glBindTexture(GL_TEXTURE_2D, start_button->texture);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// credits button
+	sprite_t* credits_button = game_state->credits_idle_sprite;
+	if (game_state->input.mouse.x > credits_button->position.x - credits_button->dimensions.x * credits_button->scale.x / 2.0f &&
+		game_state->input.mouse.x < credits_button->position.x + credits_button->dimensions.x * credits_button->scale.x / 2.0f &&
+		game_state->input.mouse.y > credits_button->position.y - credits_button->dimensions.y * credits_button->scale.y / 2.0f &&
+		game_state->input.mouse.y < credits_button->position.y + credits_button->dimensions.y * credits_button->scale.y / 2.0f) {
+		if (game_state->input.mouse_down) {
+			credits_button = game_state->credits_clicked_sprite;
+		}
+		else {
+			credits_button = game_state->credits_hover_sprite;
+		}
+	}
+	glUniform2f(game_state->u_texture_dimensions_location, (GLfloat)credits_button->dimensions.x * credits_button->scale.x, (GLfloat)credits_button->dimensions.y * credits_button->scale.y);
+	glUniform2f(game_state->u_texture_position_location, (GLfloat)credits_button->position.x, (GLfloat)credits_button->position.y);
+	glBindTexture(GL_TEXTURE_2D, credits_button->texture);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 }
 void render_game(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
