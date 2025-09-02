@@ -106,6 +106,11 @@ int init_game() {
 
 	// load sprites {
 	game_state.back_arrow_sprite = create_sprite("./Assets/back-arrow.png");
+	game_state.back_arrow_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
+	game_state.back_arrow_sprite->position = (point_t){
+		.x = game_state.back_arrow_sprite->dimensions.x * game_state.back_arrow_sprite->scale.x - game_state.GAME_WIDTH / 2,
+		.y = game_state.GAME_HEIGHT / 2 - game_state.back_arrow_sprite->dimensions.y * game_state.back_arrow_sprite->scale.y
+	};
 
 	pointf_t button_scale   = (pointf_t){ .x = 0.2f, .y = 0.2f };
 
@@ -131,11 +136,15 @@ int init_game() {
 	game_state.credits_clicked_sprite->position = cancel_sprite_position;
 	game_state.credits_clicked_sprite->scale = button_scale;
 
-	game_state.title_sprite = create_sprite("./Assets/title.png");
+	game_state.title_sprite = create_sprite("./Assets/logo-green.png");
 	game_state.title_sprite->position = (point_t){ .x = 0, .y = 225 };
 	game_state.title_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
-	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
 	game_state.credits_matty_sprite = create_sprite("./Assets/credits-matty.png");
+	game_state.credits_matty_sprite->position = (point_t){ .x = 0, .y = 0 };
+	game_state.credits_matty_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
+	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
+	game_state.credits_chrissy_sprite->position = (point_t){ .x = 0, .y = -75 };
+	game_state.credits_chrissy_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
 	game_state.how_sprite = create_sprite("./Assets/how-button.png");
 	game_state.game_over_sprite = create_sprite("./Assets/game-over.png");
 	game_state.game_over_sprite->position = (point_t){ .x = 0, .y = 200 };
@@ -268,10 +277,6 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 	switch (game_state->scene) {
 		case SCENE_MENU:
 			break;
-		case SCENE_HOW:
-			break;
-		case SCENE_CREDITS:
-			break;
 		case SCENE_PLAYING:
 			update_game(game_state, delta_time, current_time);
 			if (game_state->game_over) {
@@ -281,14 +286,27 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 				game_state->scene = SCENE_GAME_OVER;
 			}
 			break;
-		case SCENE_GAME_OVER:
-			break;
-		default:
-			break;
 	}
 }
 
-void on_click(game_state_t* game_state) {}
+void on_click(game_state_t* game_state) {
+	switch (game_state->scene) {
+		case SCENE_MENU:
+			if (point_in_sprite(game_state->start_clicked_sprite, game_state->input.mouse)) {
+				game_state->scene = SCENE_PLAYING;
+			} else if (point_in_sprite(game_state->credits_clicked_sprite, game_state->input.mouse)) {
+				game_state->scene = SCENE_CREDITS;
+			}
+			break;
+		case SCENE_HOW:
+			break;
+		case SCENE_CREDITS:
+			if (point_in_sprite(game_state->back_arrow_sprite, game_state->input.mouse)) {
+				game_state->scene = SCENE_MENU;
+			}
+			break;
+	}
+}
 
 void end_game(GLFWwindow* window) {
 	glfwDestroyWindow(window);

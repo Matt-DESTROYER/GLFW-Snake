@@ -3,19 +3,6 @@
 #include "glfw_includes.h"
 #include "game.h"
 
-void game_menu_input(game_state_t* game_state, int action, int key) {
-	if (action == GLFW_PRESS) {
-		switch (key) {
-			case GLFW_KEY_ESCAPE:
-				glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
-				break;
-			case GLFW_KEY_SPACE:
-			case GLFW_KEY_ENTER:
-				game_state->scene = SCENE_PLAYING;
-				break;
-		}
-	}
-}
 void game_playing_input(game_state_t* game_state, int action, int key) {
 	if (action == GLFW_PRESS) {
 		switch (key) {
@@ -69,9 +56,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
 	int action, int mods) {
 	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
 	switch (game_state->scene) {
-		case SCENE_MENU:
-			game_menu_input(game_state, action, key);
-			break;
 		case SCENE_PLAYING:
 			game_playing_input(game_state, action, key);
 			break;
@@ -96,6 +80,7 @@ static void mouse_button_callback(GLFWwindow* window,
 			game_state->input.mouse_down = true;
 		} else if (action == GLFW_RELEASE) {
 			game_state->input.mouse_down = false;
+			on_click(game_state);
 		}
 	}
 }

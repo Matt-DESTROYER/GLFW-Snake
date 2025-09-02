@@ -11,7 +11,7 @@ sprite_t* create_sprite(const char* image) {
 	}
 	sprite->position   = (point_t){ .x = 0, .y = 0 };
 	sprite->dimensions = (point_t){ .x = 0, .y = 0 };
-	sprite->scale      = (pointf_t){ .x = 0, .y = 0 };
+	sprite->scale      = (pointf_t){ .x = 1.0f, .y = 1.0f };
 	sprite->shader_program = 0;
 	sprite->texture        = 0;
 	sprite_load_texture(sprite, image);
@@ -32,6 +32,12 @@ void sprite_load_shader(sprite_t* sprite, const char* vertex_path, const char* f
 }
 void sprite_load_default_shader(sprite_t* sprite) {
 	sprite_load_shader(sprite, DEFAULT_TEXTURE_VERTEX_SHADER, DEFAULT_TEXTURE_FRAGMENT_SHADER);
+}
+bool point_in_sprite(sprite_t* sprite, point_t point) {
+	return point.x > sprite->position.x - sprite->dimensions.x * sprite->scale.x / 2.0f &&
+		point.x < sprite->position.x + sprite->dimensions.x * sprite->scale.x / 2.0f &&
+		point.y > sprite->position.y - sprite->dimensions.y * sprite->scale.y / 2.0f &&
+		point.y < sprite->position.y + sprite->dimensions.y * sprite->scale.y / 2.0f;
 }
 void free_sprite(sprite_t* sprite) {
 	if (sprite == NULL) {

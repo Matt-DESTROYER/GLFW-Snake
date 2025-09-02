@@ -101,6 +101,7 @@ void restart_game(game_state_t* game_state);
 int init_game();
 void game_loop(GLFWwindow* window, game_state_t* game_state);
 void update(game_state_t* game_state, double delta_time, double current_time);
+void on_click(game_state_t* game_state);
 void end_game(GLFWwindow* window);
 
 #endif

@@ -164,7 +164,7 @@ sprite_t* pick_digit_sprite(game_state_t* game_state, short digit) {
 }
 
 void render_menu(game_state_t* game_state) {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// prepare to render textures
@@ -176,11 +176,7 @@ void render_menu(game_state_t* game_state) {
 	render_sprite(game_state, game_state->title_sprite);
 
 	// start button
-	sprite_t* start_button = game_state->start_idle_sprite;
-	if (game_state->input.mouse.x > start_button->position.x - start_button->dimensions.x * start_button->scale.x / 2.0f &&
-		game_state->input.mouse.x < start_button->position.x + start_button->dimensions.x * start_button->scale.x / 2.0f &&
-		game_state->input.mouse.y > start_button->position.y - start_button->dimensions.y * start_button->scale.y / 2.0f &&
-		game_state->input.mouse.y < start_button->position.y + start_button->dimensions.y * start_button->scale.y / 2.0f) {
+	if (point_in_sprite(game_state->start_idle_sprite, game_state->input.mouse)) {
 		if (game_state->input.mouse_down) {
 			render_sprite(game_state, game_state->start_clicked_sprite);
 		} else {
@@ -191,19 +187,37 @@ void render_menu(game_state_t* game_state) {
 	}
 
 	// credits button
-	sprite_t* credits_button = game_state->credits_idle_sprite;
-	if (game_state->input.mouse.x > credits_button->position.x - credits_button->dimensions.x * credits_button->scale.x / 2.0f &&
-		game_state->input.mouse.x < credits_button->position.x + credits_button->dimensions.x * credits_button->scale.x / 2.0f &&
-		game_state->input.mouse.y > credits_button->position.y - credits_button->dimensions.y * credits_button->scale.y / 2.0f &&
-		game_state->input.mouse.y < credits_button->position.y + credits_button->dimensions.y * credits_button->scale.y / 2.0f) {
+	if (point_in_sprite(game_state->credits_idle_sprite, game_state->input.mouse)) {
 		if (game_state->input.mouse_down) {
 			render_sprite(game_state, game_state->credits_clicked_sprite);
 		} else {
 			render_sprite(game_state, game_state->credits_hover_sprite);
 		}
+	} else {
+		render_sprite(game_state, game_state->credits_idle_sprite);
 	}
-	render_sprite(game_state, game_state->credits_idle_sprite);
 
+}
+void render_credits(game_state_t* game_state) {
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// prepare to render textures
+	glBindVertexArray(game_state->rect_VAO);
+	glUseProgram(game_state->texture_shader_program);
+	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
+
+	// title/logo
+	render_sprite(game_state, game_state->title_sprite);
+
+	// matty credit
+	render_sprite(game_state, game_state->credits_matty_sprite);
+
+	// chrissy credit
+	render_sprite(game_state, game_state->credits_chrissy_sprite);
+
+	// back button
+	render_sprite(game_state, game_state->back_arrow_sprite);
 }
 void render_game(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -274,6 +288,11 @@ void render(game_state_t* game_state) {
 	switch (game_state->scene) {
 		case SCENE_MENU:
 			render_menu(game_state);
+			break;
+		case SCENE_HOW:
+			break;
+		case SCENE_CREDITS:
+			render_credits(game_state);
 			break;
 		case SCENE_PLAYING:
 			render_game(game_state);
