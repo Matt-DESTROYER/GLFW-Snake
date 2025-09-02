@@ -3,26 +3,19 @@
 
 #include "glfw_includes.h"
 #include "images.h"
-
-typedef struct uniform_list_node {
-	char* name;
-	GLint location;
-
-	uniform_list_node_t* next;
-} uniform_list_node_t;
-
-typedef struct uniform_list {
-	size_t length;
-	uniform_list_node* head;
-	uniform_list_node* tail;
-} uniform_list_t;
+#include "point.h"
 
 typedef struct sprite {
 	char* name;
-
-	uniform_list_t uniforms;
-
+	point_t position;
 	GLint shader_program;
+	GLuint texture;
 } sprite_t;
+
+sprite_t* create_sprite(const char* name, point_t position);
+image_t*  sprite_load_texture(sprite_t* sprite, const char* image_path);
+void      sprite_load_shader(sprite_t* sprite, const char* vertex_path, const char* fragment_path);
+void      sprite_load_shader_program(sprite_t* sprite, GLint shader_program);
+void      free_sprite(sprite_t* sprite);
 
 #endif
