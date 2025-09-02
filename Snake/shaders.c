@@ -5,19 +5,12 @@
 
 #include "file.h"
 
-GLint create_shader(const char* vertex_shader_file, const char* fragment_shader_file) {
+GLint create_shader(char* vertex_shader_source, char* fragment_shader_source) {
 	GLint success;
-
-	char* vertex_shader_source = read_file(vertex_shader_file);
-	if (vertex_shader_source == NULL) {
-		return FAILURE;
-	}
 
 	GLint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex_shader, 1, (const char**)&vertex_shader_source, NULL);
 	glCompileShader(vertex_shader);
-
-	free(vertex_shader_source);
 
 	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
@@ -28,16 +21,9 @@ GLint create_shader(const char* vertex_shader_file, const char* fragment_shader_
 		return FAILURE;
 	}
 
-	char* fragment_shader_source = read_file(fragment_shader_file);
-	if (fragment_shader_source == NULL) {
-		return FAILURE;
-	}
-
 	GLint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_shader, 1, (const char**)&fragment_shader_source, NULL);
 	glCompileShader(fragment_shader);
-
-	free(fragment_shader_source);
 	
 	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
@@ -66,6 +52,25 @@ GLint create_shader(const char* vertex_shader_file, const char* fragment_shader_
 
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
+
+	return shader_program;
+}
+
+GLint create_shader_from_file(const char* vertex_shader_file, const char* fragment_shader_file) {
+	char* vertex_shader_source = read_file(vertex_shader_file);
+	if (vertex_shader_source == NULL) {
+		return FAILURE;
+	}
+
+	char* fragment_shader_source = read_file(fragment_shader_file);
+	if (fragment_shader_source == NULL) {
+		return FAILURE;
+	}
+
+	GLint shader_program = create_shader(vertex_shader_source, fragment_shader_source);
+
+	free(vertex_shader_source);
+	free(fragment_shader_source);
 
 	return shader_program;
 }

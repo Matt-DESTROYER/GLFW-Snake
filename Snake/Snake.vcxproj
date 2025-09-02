@@ -200,6 +200,7 @@
     <ClCompile Include="point.c" />
     <ClCompile Include="renderer.c" />
     <ClCompile Include="shaders.c" />
+    <ClCompile Include="sprite.c" />
     <ClCompile Include="window.c" />
   </ItemGroup>
   <ItemGroup>

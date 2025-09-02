@@ -17,10 +17,10 @@ void error_callback(int error, const char* desc) {
 void restart_game(game_state_t* game_state) {
 	game_state->score = 0;
 
-	game_state->snake[0].x = (float)((int)(GRID_WIDTH_LEFT / 2));
+	game_state->snake[0].x = (int)(GRID_WIDTH_LEFT / 2);
 	game_state->snake[0].y = 0;
 
-	game_state->apple.x = (float)((int)(GRID_WIDTH_RIGHT / 2));
+	game_state->apple.x = (int)(GRID_WIDTH_RIGHT / 2);
 	game_state->apple.y = 0;
 
 	game_state->food_count = 1;
@@ -41,6 +41,20 @@ float calc_size(int width, int height) {
 	return cell_height;
 }
 
+void window_size_callback(GLFWwindow* window, int width, int height) {
+	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
+	game_state->GAME_WIDTH = width;
+	game_state->GAME_HEIGHT = height;
+
+	game_state->SIZE = calc_size(width, height);
+
+	glUseProgram(game_state->rect_shader_program);
+	glUniform2f(game_state->u_screen_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
+
+	glUseProgram(game_state->texture_shader_program);
+	glUniform2f(game_state->u_texture_screen_dimensions_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
+}
+
 int init_game() {
 	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
@@ -52,7 +66,8 @@ int init_game() {
 	const int GAME_WIDTH = (int)(video_mode->width * 0.75);
 	const int GAME_HEIGHT = (int)(video_mode->height * 0.75);
 
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 	GLFWwindow* window = init_glfw_window(GAME_WIDTH, GAME_HEIGHT, "Snake",
 		NULL, NULL);
 	if (window == NULL) {
@@ -64,30 +79,65 @@ int init_game() {
 	game_state.high_score = 0;
 
 	for (size_t i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
-		game_state.snake[i].x = 0.0f;
-		game_state.snake[i].y = 0.0f;
+		game_state.snake[i].x = 0;
+		game_state.snake[i].y = 0;
 	}
 
 	game_state.input.mouse.x = 0;
 	game_state.input.mouse.y = 0;
 
-	game_state.GAME_WIDTH  = (float)GAME_WIDTH;
-	game_state.GAME_HEIGHT = (float)GAME_HEIGHT;
+	game_state.GAME_WIDTH  = GAME_WIDTH;
+	game_state.GAME_HEIGHT = GAME_HEIGHT;
 
-	game_state.SIZE = calc_size((float)GAME_WIDTH, (float)GAME_HEIGHT);
+	game_state.SIZE = calc_size(GAME_WIDTH, GAME_HEIGHT);
 
 	restart_game(&game_state);
 
 	game_state.scene = SCENE_MENU;
-	//game_state.scene = SCENE_PLAYING;
 	// }
 
 	// LOAD OUR FIRST IMAGE!!!
 	image_t* image = load_image("Assets/title.png");
 	game_state.texture_title = create_texture(image);
 	free_image(image);
+
+	// load sprites {
+	// sprites
+	//game_state.apple_sprite = create_sprite("./Assets/");
+
+	game_state.back_arrow_sprite = create_sprite("./Assets/back-arrow.png");
+
+	game_state.start_idle_sprite = create_sprite("./Assets/start-button-idle.png");
+	game_state.start_hover_sprite = create_sprite("./Assets/start-button-hover.png");
+	game_state.start_clicked_sprite = create_sprite("./Assets/start-button-clicked.png");
+
+	game_state.credits_idle_sprite = create_sprite("./Assets/credits-button-idle.png");
+	game_state.credits_hover_sprite = create_sprite("./Assets/credits-button-hover.png");
+	game_state.credits_clicked_sprite = create_sprite("./Assets/credits-button-clicked.png");
+
+	game_state.title_sprite = create_sprite("./Assets/title.png");
+	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
+	game_state.credits_matty_sprite = create_sprite("./Assets/credits-matty.png");
+	game_state.how_sprite = create_sprite("./Assets/how-button.png");
+	game_state.game_over_sprite = create_sprite("./Assets/game-over.png");
+	game_state.try_again_sprite = create_sprite("./Assets/try-again.png");
+	game_state.score_sprite = create_sprite("./Assets/score.png");
+
+	game_state.num_0_sprite = create_sprite("./Assets/0.png");
+	game_state.num_1_sprite = create_sprite("./Assets/1.png");
+	game_state.num_2_sprite = create_sprite("./Assets/2.png");
+	game_state.num_3_sprite = create_sprite("./Assets/3.png");
+	game_state.num_4_sprite = create_sprite("./Assets/4.png");
+	game_state.num_5_sprite = create_sprite("./Assets/5.png");
+	game_state.num_6_sprite = create_sprite("./Assets/6.png");
+	game_state.num_7_sprite = create_sprite("./Assets/7.png");
+	game_state.num_8_sprite = create_sprite("./Assets/8.png");
+	game_state.num_9_sprite = create_sprite("./Assets/9.png");
+	// }
 	
 	glfwSetWindowUserPointer(window, &game_state);
+
+	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)window_size_callback);
 
 	if (init_renderer(&game_state) == FAILURE) {
 		end_game(window);

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "glfw_includes.h"
+#include "sprite.h"
 #include "point.h"
 #include "input.h"
 
@@ -39,8 +40,8 @@ typedef struct game_state {
 	bool paused;
 	double speed;
 	input_t input;
-	float GAME_WIDTH;
-	float GAME_HEIGHT;
+	int GAME_WIDTH;
+	int GAME_HEIGHT;
 	float SIZE;
 	double last_tick;
 	game_scene_t scene;
@@ -62,6 +63,38 @@ typedef struct game_state {
 	GLint u_texture_position_location;
 
 	GLuint texture_title;
+
+	// sprites
+	sprite_t* apple_sprite;
+
+	sprite_t* back_arrow_sprite;
+
+	sprite_t* start_idle_sprite;
+	sprite_t* start_hover_sprite;
+	sprite_t* start_clicked_sprite;
+
+	sprite_t* credits_idle_sprite;
+	sprite_t* credits_hover_sprite;
+	sprite_t* credits_clicked_sprite;
+
+	sprite_t* title_sprite;
+	sprite_t* credits_chrissy_sprite;
+	sprite_t* credits_matty_sprite;
+	sprite_t* how_sprite;
+	sprite_t* game_over_sprite;
+	sprite_t* try_again_sprite;
+	sprite_t* score_sprite;
+
+	sprite_t* num_0_sprite;
+	sprite_t* num_1_sprite;
+	sprite_t* num_2_sprite;
+	sprite_t* num_3_sprite;
+	sprite_t* num_4_sprite;
+	sprite_t* num_5_sprite;
+	sprite_t* num_6_sprite;
+	sprite_t* num_7_sprite;
+	sprite_t* num_8_sprite;
+	sprite_t* num_9_sprite;
 } game_state_t;
 
 void restart_game(game_state_t* game_state);

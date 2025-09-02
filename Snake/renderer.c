@@ -17,13 +17,13 @@
 #define COLOUR_GREEN      0.0f, 138.0f, 0.0f
 
 int init_renderer(game_state_t* game_state) {
-	game_state->rect_shader_program = create_shader("./Shaders/rect.vert", "./Shaders/rect.frag");
+	game_state->rect_shader_program = create_shader_from_file("./Shaders/rect.vert", "./Shaders/rect.frag");
 	if (game_state->rect_shader_program == FAILURE) {
 		fprintf(stderr, "Error: Failed to load shaders...");
 		return FAILURE;
 	}
 
-	game_state->texture_shader_program = create_shader("./Shaders/texture.vert", "./Shaders/texture.frag");
+	game_state->texture_shader_program = create_shader_from_file("./Shaders/texture.vert", "./Shaders/texture.frag");
 	if (game_state->texture_shader_program == FAILURE) {
 		glDeleteProgram(game_state->rect_shader_program);
 		fprintf(stderr, "Error: Failed to load texture shaders...");
@@ -52,10 +52,10 @@ int init_renderer(game_state_t* game_state) {
 	}
 
 	glUseProgram(game_state->rect_shader_program);
-	glUniform2f(game_state->u_screen_location, game_state->GAME_WIDTH, game_state->GAME_HEIGHT);
+	glUniform2f(game_state->u_screen_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
 
 	glUseProgram(game_state->texture_shader_program);
-	glUniform2f(game_state->u_texture_screen_dimensions_location, game_state->GAME_WIDTH, game_state->GAME_HEIGHT);
+	glUniform2f(game_state->u_texture_screen_dimensions_location, (GLfloat)game_state->GAME_WIDTH, (GLfloat)game_state->GAME_HEIGHT);
 
 	return SUCCESS;
 }
@@ -138,24 +138,24 @@ void render_game(game_state_t* game_state) {
 	glUniform4f(game_state->u_colour_location, COLOUR_GREY, 1.0f);
 	float width = (game_state->GAME_WIDTH - (float)GRID_WIDTH * game_state->SIZE) / 2;
 	if (width > 0) {
-		glUniform2f(game_state->u_dimensions_location, width, game_state->GAME_HEIGHT);
+		glUniform2f(game_state->u_dimensions_location, width, (GLfloat)game_state->GAME_HEIGHT);
 		// left side
 		glUniform2f(game_state->u_position_location, width / 2 - game_state->GAME_WIDTH / 2, 0);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		// right side
 		glUniform2f(game_state->u_position_location, game_state->GAME_WIDTH / 2 - width / 2, 0);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}/*
+	}
 	float height = (game_state->GAME_HEIGHT - (float)GRID_HEIGHT * game_state->SIZE) / 2;
 	if (height > 0) {
-		glUniform2f(game_state->u_dimensions_location, game_state->GAME_WIDTH, height);
-		// top side
-		glUniform2f(game_state->u_position_location, width / 2 - game_state->GAME_WIDTH / 2, 0);
+		glUniform2f(game_state->u_dimensions_location, (GLfloat)game_state->GAME_WIDTH, height);
+		// left side
+		glUniform2f(game_state->u_position_location, 0, height / 2 - game_state->GAME_HEIGHT / 2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		// bottom side
-		glUniform2f(game_state->u_position_location, game_state->GAME_WIDTH / 2 - width / 2, 0);
+		// right side
+		glUniform2f(game_state->u_position_location, 0, game_state->GAME_HEIGHT / 2 - height / 2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}*/
+	}
 }
 void render_game_over(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

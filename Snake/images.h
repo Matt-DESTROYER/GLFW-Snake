@@ -1,4 +1,5 @@
 #ifndef IMAGES_H
+#define IMAGES_H
 
 #include "glfw_includes.h"
 

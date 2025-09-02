@@ -48,6 +48,9 @@
     <ClCompile Include="include\glad\gl.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="sprite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h">
