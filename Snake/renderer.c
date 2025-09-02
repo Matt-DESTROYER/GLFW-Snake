@@ -223,7 +223,7 @@ void render_game(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// prepare to draw squares
+	// prepare to render squares
 	glBindVertexArray(game_state->rect_VAO);
 	glUseProgram(game_state->rect_shader_program);
 	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
@@ -267,6 +267,20 @@ void render_game(game_state_t* game_state) {
 		glUniform2f(game_state->u_position_location, 0, game_state->GAME_HEIGHT / 2 - height / 2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
+
+	// prepare to render textures
+	glBindVertexArray(game_state->rect_VAO);
+	glUseProgram(game_state->texture_shader_program);
+	glUniform2f(game_state->u_dimensions_location, game_state->SIZE, game_state->SIZE);
+
+	// score text
+	game_state->score_sprite->position = (point_t){
+		.x = (int)(GRID_WIDTH_LEFT * game_state->SIZE) + (int)((float)game_state->score_sprite->dimensions.x * game_state->score_sprite->scale.x / 2.0f) - 20,
+		.y = (int)(GRID_HEIGHT_TOP * game_state->SIZE) + (int)((float)game_state->score_sprite->dimensions.y * game_state->score_sprite->scale.y / 2.0f) - 10
+	};
+	render_sprite(game_state, game_state->score_sprite);
+
+	// score number
 }
 void render_game_over(game_state_t* game_state) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -282,6 +296,9 @@ void render_game_over(game_state_t* game_state) {
 
 	// try again
 	render_sprite(game_state, game_state->try_again_sprite);
+
+	// back button
+	render_sprite(game_state, game_state->back_arrow_sprite);
 }
 
 void render(game_state_t* game_state) {

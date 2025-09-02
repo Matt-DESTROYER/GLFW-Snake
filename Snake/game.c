@@ -114,7 +114,7 @@ int init_game() {
 
 	pointf_t button_scale   = (pointf_t){ .x = 0.2f, .y = 0.2f };
 
-	point_t start_sprite_position = (point_t){ .x = 0, .y = 0 };
+	point_t start_sprite_position = (point_t){ .x = 0, .y = 25 };
 	game_state.start_idle_sprite = create_sprite("./Assets/start-button-idle.png");
 	game_state.start_idle_sprite->position = start_sprite_position;
 	game_state.start_idle_sprite->scale    = button_scale;
@@ -125,7 +125,7 @@ int init_game() {
 	game_state.start_clicked_sprite->position = start_sprite_position;
 	game_state.start_clicked_sprite->scale = button_scale;
 
-	point_t cancel_sprite_position = (point_t){ .x = 0, .y = -150 };
+	point_t cancel_sprite_position = (point_t){ .x = 0, .y = -100 };
 	game_state.credits_idle_sprite = create_sprite("./Assets/credits-button-idle.png");
 	game_state.credits_idle_sprite->position = cancel_sprite_position;
 	game_state.credits_idle_sprite->scale = button_scale;
@@ -153,6 +153,7 @@ int init_game() {
 	game_state.try_again_sprite->position = (point_t){ .x = 0, .y = -200 };
 	game_state.try_again_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
 	game_state.score_sprite = create_sprite("./Assets/score.png");
+	game_state.score_sprite->scale = (pointf_t){ .x = 0.1f, .y = 0.1f };
 
 	game_state.num_0_sprite = create_sprite("./Assets/0.png");
 	game_state.num_1_sprite = create_sprite("./Assets/1.png");
@@ -301,6 +302,11 @@ void on_click(game_state_t* game_state) {
 		case SCENE_HOW:
 			break;
 		case SCENE_CREDITS:
+			if (point_in_sprite(game_state->back_arrow_sprite, game_state->input.mouse)) {
+				game_state->scene = SCENE_MENU;
+			}
+			break;
+		case SCENE_GAME_OVER:
 			if (point_in_sprite(game_state->back_arrow_sprite, game_state->input.mouse)) {
 				game_state->scene = SCENE_MENU;
 			}
