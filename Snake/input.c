@@ -34,6 +34,9 @@ void game_playing_input(game_state_t* game_state, int action, int key) {
 			case GLFW_KEY_ESCAPE:
 				game_state->paused = !game_state->paused;
 				break;
+			
+			default:
+				break;
 		}
 	}
 }
@@ -46,7 +49,10 @@ void game_over_input(game_state_t* game_state, int action, int key) {
 			case GLFW_KEY_SPACE:
 			case GLFW_KEY_ENTER:
 				restart_game(game_state);
-				game_state->scene = SCENE_MENU;
+				game_state->scene = SCENE_PLAYING;
+				break;
+			
+			default:
 				break;
 		}
 	}
@@ -56,11 +62,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
 	int action, int mods) {
 	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
 	switch (game_state->scene) {
+		case SCENE_MENU:
+		case SCENE_HOW:
+		case SCENE_CREDITS:
+			break;
 		case SCENE_PLAYING:
 			game_playing_input(game_state, action, key);
 			break;
 		case SCENE_GAME_OVER:
 			game_over_input(game_state, action, key);
+			break;
+		default:
 			break;
 	}
 }

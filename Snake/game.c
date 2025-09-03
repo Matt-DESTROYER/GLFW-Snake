@@ -288,6 +288,9 @@ void update_game(game_state_t * game_state, double delta_time, double current_ti
 void update(game_state_t* game_state, double delta_time, double current_time) {
 	switch (game_state->scene) {
 		case SCENE_MENU:
+		case SCENE_HOW:
+		case SCENE_CREDITS:
+		case SCENE_GAME_OVER:
 			break;
 		case SCENE_PLAYING:
 			update_game(game_state, delta_time, current_time);
@@ -298,11 +301,15 @@ void update(game_state_t* game_state, double delta_time, double current_time) {
 				game_state->scene = SCENE_GAME_OVER;
 			}
 			break;
+		default:
+			break;
 	}
 }
 
 void on_click(game_state_t* game_state) {
 	switch (game_state->scene) {
+		case SCENE_PLAYING:
+			break;
 		case SCENE_MENU:
 			if (point_in_sprite(game_state->start_clicked_sprite, game_state->input.mouse)) {
 				game_state->scene = SCENE_PLAYING;
@@ -321,6 +328,8 @@ void on_click(game_state_t* game_state) {
 			if (point_in_sprite(game_state->back_arrow_sprite, game_state->input.mouse)) {
 				game_state->scene = SCENE_MENU;
 			}
+			break;
+		default:
 			break;
 	}
 }

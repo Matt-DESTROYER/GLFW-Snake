@@ -47,7 +47,7 @@ typedef struct game_state {
 	game_scene_t scene;
 
 	// TEMP
-	GLint rect_shader_program;
+	GLuint rect_shader_program;
 	GLint rect_VAO;
 	GLint rect_VBO;
 	GLint rect_EBO;
@@ -57,7 +57,7 @@ typedef struct game_state {
 	GLint u_dimensions_location;
 	GLint u_colour_location;
 
-	GLint texture_shader_program;
+	GLuint texture_shader_program;
 	GLint u_texture_screen_dimensions_location;
 	GLint u_texture_dimensions_location;
 	GLint u_texture_position_location;

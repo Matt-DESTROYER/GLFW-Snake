@@ -19,7 +19,11 @@ char* read_file(const char* filename) {
 		return NULL;
 	}
 
-	fread(buffer, sizeof(char), length, file);
+	if (fread(buffer, sizeof(char), length, file) < length) {
+		fclose(file);
+		free(buffer);
+		return NULL;
+	}
 	buffer[length] = '\0';
 
 	fclose(file);
