@@ -38,7 +38,6 @@ target_link_libraries(Snake PRIVATE
   ${GLFW_LIB}
   ${CMAKE_DL_LIBS}
   ${CMAKE_THREAD_LIBS_INIT}
-  m # libm math library
 )
 
 # on Linux we need additional libraries for OpenGL and X11
@@ -52,14 +51,18 @@ if (APPLE)
     "-framework OpenGL"
   )
   target_link_libraries(Snake PRIVATE OpenGL::GL)
-elseif (UNIX)
+else()
+  target_link_libraries(Snake PRIVATE OpenGL::GL)
+endif()
+if (UNIX)
   find_package(OpenGL REQUIRED)
   find_package(X11 REQUIRED)
   find_library(GL_LIB GL)
   find_library(X11_LIB X11)
-  target_link_libraries(Snake PRIVATE OpenGL::GL
+  target_link_libraries(Snake PRIVATE
     ${GL_LIB}
     ${X11_LIB}
+    m # libm math library
     dl # dynamic loader
     pthread # threading
   )
