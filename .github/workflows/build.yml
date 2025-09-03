@@ -34,7 +34,10 @@ jobs:
             c_compiler: cl
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout source
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Configure CMake for GLFW
       run: >
