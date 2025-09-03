@@ -43,7 +43,14 @@ target_link_libraries(Snake PRIVATE
 
 # on Linux we need additional libraries for OpenGL and X11
 if (APPLE)
-  find_package(OpenGL REQUIRED)
+  target_link_libraries(Snake PRIVATE
+    "-framework Cocoa"
+    "-framework IOKit"
+    "-framework CoreFoundation"
+    "-framework CoreGraphics"
+    "-framework Metal"
+    "-framework OpenGL"
+  )
   target_link_libraries(Snake PRIVATE OpenGL::GL)
 elseif (UNIX)
   find_package(OpenGL REQUIRED)
@@ -53,5 +60,7 @@ elseif (UNIX)
   target_link_libraries(Snake PRIVATE OpenGL::GL
     ${GL_LIB}
     ${X11_LIB}
+    dl # dynamic loader
+    pthread # threading
   )
 endif()
