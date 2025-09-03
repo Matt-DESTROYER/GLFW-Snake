@@ -34,9 +34,11 @@ target_include_directories(Snake PRIVATE ${GLFW_INCLUDE_DIR}
 )
 
 # link libraries
-target_link_libraries(Snake PRIVATE ${GLFW_LIB}
+target_link_libraries(Snake PRIVATE
+  ${GLFW_LIB}
   ${CMAKE_DL_LIBS}
   ${CMAKE_THREAD_LIBS_INIT}
+  m # libm math library
 )
 
 # on Linux we need additional libraries for OpenGL and X11
