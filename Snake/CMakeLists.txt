@@ -40,7 +40,10 @@ target_link_libraries(Snake PRIVATE ${GLFW_LIB}
 )
 
 # on Linux we need additional libraries for OpenGL and X11
-if (UNIX)
+if (APPLE)
+  find_package(OpenGL REQUIRED)
+  target_link_libraries(Snake PRIVATE OpenGL::GL)
+elseif (UNIX)
   find_package(OpenGL REQUIRED)
   find_package(X11 REQUIRED)
   find_library(GL_LIB GL)
