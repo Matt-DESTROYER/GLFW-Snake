@@ -45,22 +45,24 @@ if (APPLE)
   target_link_libraries(Snake PRIVATE
     "-framework Cocoa"
     "-framework IOKit"
-    "-framework CoreFoundation"
-    "-framework CoreGraphics"
+    "-framework CoreVideo"
+    "-framework QuartzCore"
     "-framework Metal"
     "-framework OpenGL"
   )
-elseif (UNIX AND NOT APPLE)
+elseif (UNIX)
   find_package(OpenGL REQUIRED)
+  find_package(Threads REQUIRED)
   find_package(X11 REQUIRED)
   find_library(GL_LIB GL)
   find_library(X11_LIB X11)
   target_link_libraries(Snake PRIVATE
     ${GL_LIB}
+    OpenGL::GL
     ${X11_LIB}
+    Threads::Threads
     m # libm math library
     dl # dynamic loader
-    pthread # threading
   )
   target_link_libraries(Snake PRIVATE OpenGL::GL)
 endif()
