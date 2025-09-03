@@ -50,11 +50,7 @@ if (APPLE)
     "-framework Metal"
     "-framework OpenGL"
   )
-  target_link_libraries(Snake PRIVATE OpenGL::GL)
-else()
-  target_link_libraries(Snake PRIVATE OpenGL::GL)
-endif()
-if (UNIX)
+elseif (UNIX AND NOT APPLE)
   find_package(OpenGL REQUIRED)
   find_package(X11 REQUIRED)
   find_library(GL_LIB GL)
@@ -66,4 +62,5 @@ if (UNIX)
     dl # dynamic loader
     pthread # threading
   )
+  target_link_libraries(Snake PRIVATE OpenGL::GL)
 endif()
