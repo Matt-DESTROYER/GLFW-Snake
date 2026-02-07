@@ -59,13 +59,11 @@ GLuint create_shader(char* vertex_shader_source, char* fragment_shader_source) {
 GLuint create_shader_from_file(const char* vertex_shader_file, const char* fragment_shader_file) {
 	char* vertex_shader_source = read_file(vertex_shader_file);
 	if (vertex_shader_source == NULL) {
-		fprintf(stderr, "Error: Failed to read vertex shader file: %s\n", vertex_shader_file);
 		return FAILURE;
 	}
 
 	char* fragment_shader_source = read_file(fragment_shader_file);
 	if (fragment_shader_source == NULL) {
-		fprintf(stderr, "Error: Failed to read fragment shader file: %s\n", fragment_shader_file);
 		free(vertex_shader_source);
 		return FAILURE;
 	}

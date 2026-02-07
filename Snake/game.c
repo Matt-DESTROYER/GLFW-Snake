@@ -11,16 +11,6 @@
 #include "shaders.h"
 #include "images.h"
 
-// Helper macro to check sprite creation
-#define CHECK_SPRITE(sprite, path) \
-	do { \
-		sprite = create_sprite(path); \
-		if (sprite == NULL) { \
-			fprintf(stderr, "Error: Failed to create sprite from %s\n", path); \
-			return EXIT_FAILURE; \
-		} \
-	} while(0)
-
 void error_callback(int error, const char* desc) {
 	fprintf(stderr, "Error: %s\n", desc);
 }
@@ -119,7 +109,7 @@ int init_game() {
 	// }
 
 	// load sprites {
-	CHECK_SPRITE(game_state.back_arrow_sprite, "./Assets/back-arrow.png");
+	game_state.back_arrow_sprite = create_sprite("./Assets/back-arrow.png");
 	game_state.back_arrow_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
 	game_state.back_arrow_sprite->position = (point_t){
 		.x = (int)((float)game_state.back_arrow_sprite->dimensions.x * game_state.back_arrow_sprite->scale.x - (float)game_state.GAME_WIDTH / 2.0f),
@@ -129,66 +119,66 @@ int init_game() {
 	pointf_t button_scale   = (pointf_t){ .x = 0.2f, .y = 0.2f };
 
 	point_t start_sprite_position = (point_t){ .x = 0, .y = 25 };
-	CHECK_SPRITE(game_state.start_idle_sprite, "./Assets/start-button-idle.png");
+	game_state.start_idle_sprite = create_sprite("./Assets/start-button-idle.png");
 	game_state.start_idle_sprite->position = start_sprite_position;
 	game_state.start_idle_sprite->scale    = button_scale;
-	CHECK_SPRITE(game_state.start_hover_sprite, "./Assets/start-button-hover.png");
+	game_state.start_hover_sprite = create_sprite("./Assets/start-button-hover.png");
 	game_state.start_hover_sprite->position = start_sprite_position;
 	game_state.start_hover_sprite->scale = button_scale;
-	CHECK_SPRITE(game_state.start_clicked_sprite, "./Assets/start-button-clicked.png");
+	game_state.start_clicked_sprite = create_sprite("./Assets/start-button-clicked.png");
 	game_state.start_clicked_sprite->position = start_sprite_position;
 	game_state.start_clicked_sprite->scale = button_scale;
 
 	point_t cancel_sprite_position = (point_t){ .x = 0, .y = -100 };
-	CHECK_SPRITE(game_state.credits_idle_sprite, "./Assets/credits-button-idle.png");
+	game_state.credits_idle_sprite = create_sprite("./Assets/credits-button-idle.png");
 	game_state.credits_idle_sprite->position = cancel_sprite_position;
 	game_state.credits_idle_sprite->scale = button_scale;
-	CHECK_SPRITE(game_state.credits_hover_sprite, "./Assets/credits-button-hover.png");
+	game_state.credits_hover_sprite = create_sprite("./Assets/credits-button-hover.png");
 	game_state.credits_hover_sprite->position = cancel_sprite_position;
 	game_state.credits_hover_sprite->scale = button_scale;
-	CHECK_SPRITE(game_state.credits_clicked_sprite, "./Assets/credits-button-clicked.png");
+	game_state.credits_clicked_sprite = create_sprite("./Assets/credits-button-clicked.png");
 	game_state.credits_clicked_sprite->position = cancel_sprite_position;
 	game_state.credits_clicked_sprite->scale = button_scale;
 
-	CHECK_SPRITE(game_state.title_sprite, "./Assets/logo-green.png");
+	game_state.title_sprite = create_sprite("./Assets/logo-green.png");
 	game_state.title_sprite->position = (point_t){ .x = 0, .y = 225 };
 	game_state.title_sprite->scale = (pointf_t){ .x = 0.2f, .y = 0.2f };
-	CHECK_SPRITE(game_state.credits_matty_sprite, "./Assets/credits-matty.png");
+	game_state.credits_matty_sprite = create_sprite("./Assets/credits-matty.png");
 	game_state.credits_matty_sprite->position = (point_t){ .x = 0, .y = 0 };
 	game_state.credits_matty_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
-	CHECK_SPRITE(game_state.credits_chrissy_sprite, "./Assets/credits-chrissy.png");
+	game_state.credits_chrissy_sprite = create_sprite("./Assets/credits-chrissy.png");
 	game_state.credits_chrissy_sprite->position = (point_t){ .x = 0, .y = -75 };
 	game_state.credits_chrissy_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
-	CHECK_SPRITE(game_state.how_sprite, "./Assets/how-button.png");
-	CHECK_SPRITE(game_state.game_over_sprite, "./Assets/game-over.png");
+	game_state.how_sprite = create_sprite("./Assets/how-button.png");
+	game_state.game_over_sprite = create_sprite("./Assets/game-over.png");
 	game_state.game_over_sprite->position = (point_t){ .x = 0, .y = 200 };
 	game_state.game_over_sprite->scale = (pointf_t){ .x = 0.75f, .y = 0.75f };
-	CHECK_SPRITE(game_state.try_again_sprite, "./Assets/try-again.png");
+	game_state.try_again_sprite = create_sprite("./Assets/try-again.png");
 	game_state.try_again_sprite->position = (point_t){ .x = 0, .y = -200 };
 	game_state.try_again_sprite->scale = (pointf_t){ .x = 0.5f, .y = 0.5f };
-	CHECK_SPRITE(game_state.score_sprite, "./Assets/score.png");
+	game_state.score_sprite = create_sprite("./Assets/score.png");
 	game_state.score_sprite->scale = (pointf_t){ .x = 0.1f, .y = 0.1f };
 
 	pointf_t number_scale = (pointf_t){ .x = 0.125f, .y = 0.125f };
-	CHECK_SPRITE(game_state.num_0_sprite, "./Assets/0.png");
+	game_state.num_0_sprite = create_sprite("./Assets/0.png");
 	game_state.num_0_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_1_sprite, "./Assets/1.png");
+	game_state.num_1_sprite = create_sprite("./Assets/1.png");
 	game_state.num_1_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_2_sprite, "./Assets/2.png");
+	game_state.num_2_sprite = create_sprite("./Assets/2.png");
 	game_state.num_2_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_3_sprite, "./Assets/3.png");
+	game_state.num_3_sprite = create_sprite("./Assets/3.png");
 	game_state.num_3_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_4_sprite, "./Assets/4.png");
+	game_state.num_4_sprite = create_sprite("./Assets/4.png");
 	game_state.num_4_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_5_sprite, "./Assets/5.png");
+	game_state.num_5_sprite = create_sprite("./Assets/5.png");
 	game_state.num_5_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_6_sprite, "./Assets/6.png");
+	game_state.num_6_sprite = create_sprite("./Assets/6.png");
 	game_state.num_6_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_7_sprite, "./Assets/7.png");
+	game_state.num_7_sprite = create_sprite("./Assets/7.png");
 	game_state.num_7_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_8_sprite, "./Assets/8.png");
+	game_state.num_8_sprite = create_sprite("./Assets/8.png");
 	game_state.num_8_sprite->scale = number_scale;
-	CHECK_SPRITE(game_state.num_9_sprite, "./Assets/9.png");
+	game_state.num_9_sprite = create_sprite("./Assets/9.png");
 	game_state.num_9_sprite->scale = number_scale;
 	// }
 	

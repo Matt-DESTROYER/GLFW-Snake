@@ -1,7 +1,6 @@
 #include "images.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -12,15 +11,12 @@
 image_t* load_image(const char* file) {
 	image_t* image = malloc(sizeof(image_t));
 	if (image == NULL) {
-		fprintf(stderr, "Error: Failed to allocate memory for image\n");
 		return NULL;
 	}
 
 	image->data = stbi_load(file, &image->width, &image->height, &image->channels, RGBA_CHANNELS);
 	
 	if (image->data == NULL) {
-		fprintf(stderr, "Error: Failed to load image: %s\n", file);
-		fprintf(stderr, "STB Error: %s\n", stbi_failure_reason());
 		free(image);
 		return NULL;
 	}

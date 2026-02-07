@@ -1,14 +1,12 @@
 #include "sprite.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "shaders.h"
 
 sprite_t* create_sprite(const char* image) {
 	sprite_t* sprite = (sprite_t*)malloc(sizeof(sprite_t));
 	if (sprite == NULL) {
-		fprintf(stderr, "Error: Failed to allocate memory for sprite\n");
 		return NULL;
 	}
 	sprite->position   = (point_t){ .x = 0, .y = 0 };
