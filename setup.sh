@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # Install dependencies for GLFW-Snake project
 
 sudo apt-get update
