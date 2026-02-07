@@ -65,4 +65,13 @@ elseif (UNIX)
     dl # dynamic loader
   )
   target_link_libraries(Snake PRIVATE OpenGL::GL)
+elseif (WIN32)
+  # Windows requires OpenGL and system libraries
+  find_package(OpenGL REQUIRED)
+  target_link_libraries(Snake PRIVATE
+    OpenGL::GL
+    gdi32
+    user32
+    shell32
+  )
 endif()

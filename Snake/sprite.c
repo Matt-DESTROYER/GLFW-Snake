@@ -1,12 +1,14 @@
 #include "sprite.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "shaders.h"
 
 sprite_t* create_sprite(const char* image) {
 	sprite_t* sprite = (sprite_t*)malloc(sizeof(sprite_t));
 	if (sprite == NULL) {
+		fprintf(stderr, "Error: Failed to allocate memory for sprite\n");
 		return NULL;
 	}
 	sprite->position   = (point_t){ .x = 0, .y = 0 };
@@ -14,15 +16,22 @@ sprite_t* create_sprite(const char* image) {
 	sprite->scale      = (pointf_t){ .x = 1.0f, .y = 1.0f };
 	sprite->shader_program = 0;
 	sprite->texture        = 0;
-	sprite_load_texture(sprite, image);
+	if (sprite_load_texture(sprite, image) != 0) {
+		free(sprite);
+		return NULL;
+	}
 	return sprite;
 }
-void sprite_load_texture(sprite_t* sprite, const char* image_path) {
+int sprite_load_texture(sprite_t* sprite, const char* image_path) {
 	image_t* image = load_image(image_path);
+	if (image == NULL) {
+		return -1;
+	}
 	sprite->texture = create_texture(image);
 	sprite->dimensions.x = image->width;
 	sprite->dimensions.y = image->height;
-	free(image);
+	free_image(image);
+	return 0;
 }
 void sprite_load_shader_program(sprite_t* sprite, GLint shader_program) {
 	sprite->shader_program = shader_program;
