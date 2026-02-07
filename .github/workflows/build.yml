@@ -12,9 +12,44 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            generator_args: "-A x64"
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+            generator_args: ""
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+            generator_args: ""
+        exclude:
+          - os: windows-latest
+            c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
+          - os: macos-latest
+            c_compiler: cl
 
     steps:
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: >
+          sudo apt-get update && sudo apt-get install -y
+          build-essential cmake clang libx11-dev libxrandr-dev
+          libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
+          libwayland-dev wayland-protocols libxkbcommon-dev pkg-config
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -25,24 +60,76 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/glfw
-          key: glfw-${{ runner.os }}-${{ hashFiles('glfw/**') }}
-      
-      - name: Dependencies
-        run: bash ./setup.sh
+          key: glfw-${{ runner.os }}-${{ matrix.c_compiler }}-${{ hashFiles('glfw/**') }}
+
+      - name: Configure CMake for GLFW
+        run: >
+          cmake -S ${{ github.workspace }}/glfw -B ${{ github.workspace }}/glfw/build
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/glfw/install
+          -DBUILD_SHARED_LIBS=OFF
+          -DGLFW_BUILD_EXAMPLES=OFF
+          -DGLFW_BUILD_TESTS=OFF
+          -DGLFW_BUILD_DOCS=OFF
+          -DGLFW_INSTALL=ON
+          ${{ matrix.generator_args }}
+
+      - name: Build and install GLFW
+        run: |
+          cmake --build ${{ github.workspace }}/glfw/build --config ${{ matrix.build_type }}
+          cmake --install ${{ github.workspace }}/glfw/build --config ${{ matrix.build_type }}
+
+      - name: Configure Snake
+        run: >
+          cmake -S ${{ github.workspace }}/Snake -B ${{ github.workspace }}/Snake/build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DGLFW_INCLUDE_DIR=${{ github.workspace }}/glfw/install/include
+          -DGLFW_LIB_DIR=${{ github.workspace }}/glfw/install/lib
+          ${{ matrix.generator_args }}
 
       - name: Build Snake
-        run: bash ./build.sh
+        run: >
+          cmake --build ${{ github.workspace }}/Snake/build
+          --config ${{ matrix.build_type }}
+          --target Snake
+
+      - name: Prepare artifact directory
+        shell: bash
+        run: |
+          mkdir -p artifact
+          # Copy executable (platform-specific)
+          if [ -f "${{ github.workspace }}/Snake/build/${{ matrix.build_type }}/Snake.exe" ]; then
+            cp "${{ github.workspace }}/Snake/build/${{ matrix.build_type }}/Snake.exe" artifact/
+          elif [ -f "${{ github.workspace }}/Snake/build/Snake" ]; then
+            cp "${{ github.workspace }}/Snake/build/Snake" artifact/
+          fi
+          # Copy Assets and Shaders directories
+          cp -r "${{ github.workspace }}/Snake/Assets" artifact/
+          cp -r "${{ github.workspace }}/Snake/Shaders" artifact/
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
         with:
-          subject-path: "${{ github.workspace }}/Snake/build/Snake"
+          subject-path: "artifact/*"
 
-      - name: Upload artifact
+      - name: Create release archive
+        shell: bash
+        run: |
+          cd artifact
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            7z a ../Snake-${{ matrix.os }}.zip *
+          else
+            tar -czf ../Snake-${{ matrix.os }}.tar.gz *
+          fi
+
+      - name: Upload artifact to release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: "${{ github.workspace }}/Snake/build/Snake"
+          files: |
+            Snake-${{ matrix.os }}.zip
+            Snake-${{ matrix.os }}.tar.gz
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
