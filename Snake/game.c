@@ -344,7 +344,40 @@ void on_click(game_state_t* game_state) {
 	}
 }
 
+void cleanup_sprites(game_state_t* game_state) {
+	// Free all sprites
+	free_sprite(game_state->back_arrow_sprite);
+	free_sprite(game_state->start_idle_sprite);
+	free_sprite(game_state->start_hover_sprite);
+	free_sprite(game_state->start_clicked_sprite);
+	free_sprite(game_state->credits_idle_sprite);
+	free_sprite(game_state->credits_hover_sprite);
+	free_sprite(game_state->credits_clicked_sprite);
+	free_sprite(game_state->title_sprite);
+	free_sprite(game_state->credits_chrissy_sprite);
+	free_sprite(game_state->credits_matty_sprite);
+	free_sprite(game_state->how_sprite);
+	free_sprite(game_state->game_over_sprite);
+	free_sprite(game_state->try_again_sprite);
+	free_sprite(game_state->score_sprite);
+	free_sprite(game_state->num_0_sprite);
+	free_sprite(game_state->num_1_sprite);
+	free_sprite(game_state->num_2_sprite);
+	free_sprite(game_state->num_3_sprite);
+	free_sprite(game_state->num_4_sprite);
+	free_sprite(game_state->num_5_sprite);
+	free_sprite(game_state->num_6_sprite);
+	free_sprite(game_state->num_7_sprite);
+	free_sprite(game_state->num_8_sprite);
+	free_sprite(game_state->num_9_sprite);
+}
+
 void end_game(GLFWwindow* window) {
+	game_state_t* game_state = (game_state_t*)glfwGetWindowUserPointer(window);
+	if (game_state != NULL) {
+		cleanup_sprites(game_state);
+		cleanup(game_state);
+	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

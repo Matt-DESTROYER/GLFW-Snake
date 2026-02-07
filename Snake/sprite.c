@@ -55,8 +55,7 @@ void free_sprite(sprite_t* sprite) {
 	if (sprite->texture != 0) {
 		glDeleteTextures(1, &sprite->texture);
 	}
-	if (sprite->shader_program != 0) {
-		glDeleteProgram(sprite->shader_program);
-	}
+	// Note: shader_program is shared between sprites, so we don't delete it here
+	// It should be deleted in cleanup() in renderer.c
 	free(sprite);
 }
