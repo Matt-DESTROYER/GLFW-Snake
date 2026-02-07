@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "glfw_includes.h"
 #include "window.h"
@@ -72,6 +73,9 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 int init_game() {
+	// Seed random number generator
+	srand((unsigned int)time(NULL));
+
 	if (init_glfw(error_callback) == FAILURE) {
 		return EXIT_FAILURE;
 	}

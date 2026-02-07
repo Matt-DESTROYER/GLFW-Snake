@@ -10,10 +10,26 @@ char* read_file(const char* filename) {
 		return NULL;
 	}
 
-	fseek(file, 0, SEEK_END);
-	size_t length = ftell(file);
-	fseek(file, 0, SEEK_SET);
+	if (fseek(file, 0, SEEK_END) != 0) {
+		fprintf(stderr, "Error: Failed to seek to end of file: %s\n", filename);
+		fclose(file);
+		return NULL;
+	}
 
+	long file_size = ftell(file);
+	if (file_size < 0) {
+		fprintf(stderr, "Error: Failed to get file size: %s\n", filename);
+		fclose(file);
+		return NULL;
+	}
+
+	if (fseek(file, 0, SEEK_SET) != 0) {
+		fprintf(stderr, "Error: Failed to seek to start of file: %s\n", filename);
+		fclose(file);
+		return NULL;
+	}
+
+	size_t length = (size_t)file_size;
 	char* buffer = (char*)malloc(sizeof(char) * (length + 1));
 	if (!buffer) {
 		fprintf(stderr, "Error: Failed to allocate memory for file: %s\n", filename);
