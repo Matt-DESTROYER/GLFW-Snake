@@ -378,4 +378,5 @@ void cleanup(game_state_t* game_state) {
 	glDeleteBuffers(1, &game_state->rect_VBO);
 	glDeleteBuffers(1, &game_state->rect_EBO);
 	glDeleteProgram(game_state->rect_shader_program);
+	glDeleteProgram(game_state->texture_shader_program);
 }
