@@ -79,11 +79,23 @@ jobs:
         --config ${{ matrix.build_type }}
         --target Snake
 
-    - name: Upload binary
+    - name: Prepare artifact directory
+      shell: bash
+      run: |
+        mkdir -p artifact
+        # Copy executable (platform-specific)
+        if [ -f "${{ github.workspace }}/Snake/build/${{ matrix.build_type }}/Snake.exe" ]; then
+          cp "${{ github.workspace }}/Snake/build/${{ matrix.build_type }}/Snake.exe" artifact/
+        elif [ -f "${{ github.workspace }}/Snake/build/Snake" ]; then
+          cp "${{ github.workspace }}/Snake/build/Snake" artifact/
+        fi
+        # Copy Assets and Shaders directories
+        cp -r "${{ github.workspace }}/Snake/Assets" artifact/
+        cp -r "${{ github.workspace }}/Snake/Shaders" artifact/
+
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: Snake-${{ matrix.os }}
-        path: |
-          ${{ github.workspace }}/Snake/build/${{ matrix.build_type }}/Snake.exe
-          ${{ github.workspace }}/Snake/build/Snake
+        path: artifact/
 
