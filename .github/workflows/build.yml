@@ -59,10 +59,13 @@ jobs:
         id: cache-glfw
         uses: actions/cache@v5
         with:
-          path: ${{ github.workspace }}/glfw
+          path: |
+            ${{ github.workspace }}/glfw/build
+            ${{ github.workspace }}/glfw/install
           key: glfw-${{ runner.os }}-${{ matrix.c_compiler }}-${{ hashFiles('glfw/**') }}
 
       - name: Configure CMake for GLFW
+        if: steps.cache-glfw.outputs.cache-hit != 'true'
         run: >
           cmake -S ${{ github.workspace }}/glfw -B ${{ github.workspace }}/glfw/build
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
@@ -76,6 +79,7 @@ jobs:
           ${{ matrix.generator_args }}
 
       - name: Build and install GLFW
+        if: steps.cache-glfw.outputs.cache-hit != 'true'
         run: |
           cmake --build ${{ github.workspace }}/glfw/build --config ${{ matrix.build_type }}
           cmake --install ${{ github.workspace }}/glfw/build --config ${{ matrix.build_type }}
@@ -128,8 +132,7 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           files: |
-            Snake-${{ matrix.os }}.zip
-            Snake-${{ matrix.os }}.tar.gz
+            Snake-${{ matrix.os }}.*
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
