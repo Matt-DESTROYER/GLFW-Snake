@@ -17,7 +17,7 @@ typedef struct sprite {
 } sprite_t;
 
 sprite_t* create_sprite(const char* name);
-int       sprite_load_texture(sprite_t* sprite, const char* image_path);
+void      sprite_load_texture(sprite_t* sprite, const char* image_path);
 void      sprite_load_shader_program(sprite_t* sprite, GLint shader_program);
 void      sprite_load_shader(sprite_t* sprite, const char* vertex_path, const char* fragment_path);
 void      sprite_load_default_shader(sprite_t* sprite);

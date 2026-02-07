@@ -15,11 +15,6 @@ image_t* load_image(const char* file) {
 	}
 
 	image->data = stbi_load(file, &image->width, &image->height, &image->channels, RGBA_CHANNELS);
-	
-	if (image->data == NULL) {
-		free(image);
-		return NULL;
-	}
 
 	return image;
 }

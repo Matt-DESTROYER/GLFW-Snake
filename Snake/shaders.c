@@ -64,7 +64,6 @@ GLuint create_shader_from_file(const char* vertex_shader_file, const char* fragm
 
 	char* fragment_shader_source = read_file(fragment_shader_file);
 	if (fragment_shader_source == NULL) {
-		free(vertex_shader_source);
 		return FAILURE;
 	}
 

@@ -14,22 +14,15 @@ sprite_t* create_sprite(const char* image) {
 	sprite->scale      = (pointf_t){ .x = 1.0f, .y = 1.0f };
 	sprite->shader_program = 0;
 	sprite->texture        = 0;
-	if (sprite_load_texture(sprite, image) != 0) {
-		free(sprite);
-		return NULL;
-	}
+	sprite_load_texture(sprite, image);
 	return sprite;
 }
-int sprite_load_texture(sprite_t* sprite, const char* image_path) {
+void sprite_load_texture(sprite_t* sprite, const char* image_path) {
 	image_t* image = load_image(image_path);
-	if (image == NULL) {
-		return -1;
-	}
 	sprite->texture = create_texture(image);
 	sprite->dimensions.x = image->width;
 	sprite->dimensions.y = image->height;
-	free_image(image);
-	return 0;
+	free(image);
 }
 void sprite_load_shader_program(sprite_t* sprite, GLint shader_program) {
 	sprite->shader_program = shader_program;
@@ -53,7 +46,8 @@ void free_sprite(sprite_t* sprite) {
 	if (sprite->texture != 0) {
 		glDeleteTextures(1, &sprite->texture);
 	}
-	// Note: shader_program is shared between sprites, so we don't delete it here
-	// It should be deleted in cleanup() in renderer.c
+	if (sprite->shader_program != 0) {
+		glDeleteProgram(sprite->shader_program);
+	}
 	free(sprite);
 }
