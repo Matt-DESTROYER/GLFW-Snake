@@ -24,7 +24,7 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-            generator_args: "-A x64"
+            generator_args: "-G \"Visual Studio 17 2022\" -A x64"
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
@@ -87,6 +87,7 @@ jobs:
       - name: Configure Snake
         run: >
           cmake -S ${{ github.workspace }}/Snake -B ${{ github.workspace }}/Snake/build
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DGLFW_INCLUDE_DIR=${{ github.workspace }}/glfw/install/include
           -DGLFW_LIB_DIR=${{ github.workspace }}/glfw/install/lib

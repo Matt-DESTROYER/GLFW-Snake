@@ -43,6 +43,8 @@ if(WIN32)
   set_target_properties(Snake PROPERTIES
     WIN32_EXECUTABLE $<CONFIG:Release>
   )
+  # Ensure NDEBUG is defined for Release builds to match WIN32_EXECUTABLE behavior
+  target_compile_definitions(Snake PRIVATE $<$<CONFIG:Release>:NDEBUG>)
 endif()
 
 # include directories
