@@ -38,7 +38,7 @@ add_executable(Snake
   sprite.c
 )
 
-# On Windows, suppress console window in Release builds
+# On Windows, hide console window in Release builds
 if(WIN32)
   set_target_properties(Snake PROPERTIES
     WIN32_EXECUTABLE $<CONFIG:Release>
