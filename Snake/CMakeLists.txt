@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 project(Snake C)
 
+# Set optimization flags for Release builds
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  if(MSVC)
+    # MSVC optimization flags
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /O2 /Oi /Ot /GL")
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+  else()
+    # GCC/Clang optimization flags
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -DNDEBUG")
+  endif()
+endif()
+
 # find installed GLFW headers and libraries
 find_path(
   GLFW_INCLUDE_DIR
@@ -27,6 +39,13 @@ add_executable(Snake
   shaders.c
   sprite.c
 )
+
+# On Windows, suppress console window in Release builds
+if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Release")
+  set_target_properties(Snake PROPERTIES
+    WIN32_EXECUTABLE TRUE
+  )
+endif()
 
 # include directories
 target_include_directories(Snake PRIVATE ${GLFW_INCLUDE_DIR}
