@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(Snake C)
 
+set(OpenGL_GL_PREFERENCE GLVND)
+
 # Set optimization flags for Release builds
 if(MSVC)
   # MSVC optimization flags
@@ -70,12 +72,15 @@ if (APPLE)
     "-framework OpenGL"
   )
 elseif (UNIX)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(WAYLAND wayland-client xkbcommon)
   find_package(OpenGL REQUIRED)
   find_package(Threads REQUIRED)
   find_package(X11 REQUIRED)
   find_library(GL_LIB GL)
   find_library(X11_LIB X11)
   target_link_libraries(Snake PRIVATE
+    ${WAYLAND_LIBRARIES}
     ${GL_LIB}
     OpenGL::GL
     ${X11_LIB}
