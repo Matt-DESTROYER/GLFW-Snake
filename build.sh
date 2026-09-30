@@ -33,4 +33,4 @@ cp -r Snake/Shaders/ Snake/build/
 
 cd Snake/build/
 
-zip Snake.zip Snake Assets/ Shaders/
+zip -r Snake.zip Snake Assets/ Shaders/
