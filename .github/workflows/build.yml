@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-2022]
         build_type: [Release]
         c_compiler: [clang, cl]
         include:
@@ -34,7 +34,7 @@ jobs:
             cpp_compiler: clang++
             generator_args: ""
         exclude:
-          - os: windows-latest
+          - os: windows-2022
             c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
@@ -122,7 +122,7 @@ jobs:
         shell: bash
         run: |
           cd artifact
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-2022" ]; then
             7z a ../Snake-${{ matrix.os }}.zip *
           else
             tar -czf ../Snake-${{ matrix.os }}.tar.gz *
